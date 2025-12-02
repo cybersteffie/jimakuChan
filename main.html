@@ -1829,9 +1829,25 @@
 <script type="text/javascript">
 
 // バージョン情報の表示 ---------------------------------
-const SoftwareTitle = "音声認識字幕ちゃん";
-const SoftwareVersion = "2025.11.28 00:12";
-const SoftwareDeveloper = "[開発者：さぁたん ＆ さよなりω/(大学教員)西村良太]"
+const SoftwareVersion = "2025.12.02 13:48";
+
+// 言語設定を取得（localStorageから、なければ日本語）
+const currentLang = localStorage.getItem('jimakuChan_language') || 'ja';
+
+// 言語別のタイトルと開発者情報
+const SoftwareInfo = {
+    ja: {
+        title: "音声認識字幕ちゃん",
+        developer: "[開発者：さぁたん ＆ さよなりω/(大学教員)西村良太]"
+    },
+    en: {
+        title: "ASR-Subtitle-chan",
+        developer: "[Dev: Saatan & Sayonari / Prof. Ryota Nishimura]"
+    }
+};
+
+const SoftwareTitle = SoftwareInfo[currentLang]?.title || SoftwareInfo.ja.title;
+const SoftwareDeveloper = SoftwareInfo[currentLang]?.developer || SoftwareInfo.ja.developer;
 
 // Web Speech API使用時のデバイス制限について
 console.log('音声認識: Web Speech APIは既定の音声デバイスのみ使用');

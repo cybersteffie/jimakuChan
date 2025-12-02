@@ -17,6 +17,7 @@
 
     <link rel="icon" href="./img/favicon2/favicon.ico" />
     <script src="js/bouyomichan_client.js"></script>
+    <script src="js/i18n.js"></script>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5RNP0LDER8"></script>
@@ -117,79 +118,86 @@
 <!-- <iframe src="" name="sample" width="100%" height="30%" id="asr_frame" onclick="toggleIframeHeight()"></iframe> -->
 <iframe src="" name="sample" width="100%" height="30%" id="asr_frame" onclick="toggleIframeHeight()" style="border: none;"></iframe>
 
-　上の画面をクリックすると設定画面が閉じ，もう一度押すと再度開きます．<BR>
+<!-- Language Switcher (設定エリア内に配置) -->
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <span data-i18n="iframeInstruction">上の画面をクリックすると設定画面が閉じ，もう一度押すと再度開きます．</span>
+    <div>
+        <button id="langBtnJa" onclick="i18n.setLanguage('ja')" style="padding: 4px 10px; border: none; border-radius: 4px 0 0 4px; cursor: pointer; font-size: 12px; background: #4CAF50; color: white;">日本語</button>
+        <button id="langBtnEn" onclick="i18n.setLanguage('en')" style="padding: 4px 10px; border: none; border-radius: 0 4px 4px 0; cursor: pointer; font-size: 12px; background: #e0e0e0; color: #333;">English</button>
+    </div>
+</div>
 <HR>
 
 <!-- # プリセット機能とAPIキー ################## -->
 <div style="display: flex; gap: 10px; margin-bottom: 5px;">
     <!-- 左側：設定プリセット -->
     <div style="width: 280px; background-color: #ffe0e6; padding: 8px 10px; border-radius: 5px;">
-        <div style="font-size: 14px; margin-bottom: 4px;">設定プリセット：</div>
-        <select id="presetSelect" onchange="loadPreset()" style="width: 100%; margin-bottom: 4px;">
-            <option value="default">📋 選択してください</option>
-            <option value="gaming">🎮 ゲーム配信用</option>
-            <option value="meeting">💼 会議・打ち合わせ用</option>
-            <option value="language_learning">📚 語学学習用</option>
-            <option value="accessibility">♿ アクセシビリティ重視</option>
-            <option value="cute_streaming">🌸 かわいい配信用</option>
-            <option value="dark_theme">🌙 ダークテーマ</option>
-            <option value="rainbow">🌈 レインボー</option>
-            <option value="custom1">🔧 カスタム１</option>
-            <option value="custom2">🔧 カスタム２</option>
-            <option value="custom3">🔧 カスタム３</option>
+        <div style="font-size: 14px; margin-bottom: 4px;" data-i18n="presetLabel">設定プリセット：</div>
+        <select id="presetSelect" onchange="loadPreset()" style="width: 100%; margin-bottom: 4px;" data-i18n-options='{"default":"presetDefault","gaming":"presetGaming","meeting":"presetMeeting","language_learning":"presetLanguageLearning","accessibility":"presetAccessibility","cute_streaming":"presetCuteStreaming","dark_theme":"presetDarkTheme","rainbow":"presetRainbow","custom1":"presetCustom1","custom2":"presetCustom2","custom3":"presetCustom3"}'>
+            <option value="default" data-i18n="presetDefault">📋 選択してください</option>
+            <option value="gaming" data-i18n="presetGaming">🎮 ゲーム配信用</option>
+            <option value="meeting" data-i18n="presetMeeting">💼 会議・打ち合わせ用</option>
+            <option value="language_learning" data-i18n="presetLanguageLearning">📚 語学学習用</option>
+            <option value="accessibility" data-i18n="presetAccessibility">♿ アクセシビリティ重視</option>
+            <option value="cute_streaming" data-i18n="presetCuteStreaming">🌸 かわいい配信用</option>
+            <option value="dark_theme" data-i18n="presetDarkTheme">🌙 ダークテーマ</option>
+            <option value="rainbow" data-i18n="presetRainbow">🌈 レインボー</option>
+            <option value="custom1" data-i18n="presetCustom1">🔧 カスタム１</option>
+            <option value="custom2" data-i18n="presetCustom2">🔧 カスタム２</option>
+            <option value="custom3" data-i18n="presetCustom3">🔧 カスタム３</option>
         </select>
-        <small style="color: #666; font-size: 12px;">※ 選択すると設定が自動保存されます ✨</small>
+        <small style="color: #666; font-size: 12px;" data-i18n="presetNote">※ 選択すると設定が自動保存されます ✨</small>
     </div>
     
     <!-- 右側：APIキー関連 -->
     <div style="flex: 1; background-color: #e0e8ff; padding: 8px 10px; border-radius: 5px;">
         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 3px;">
-            <span style="font-size: 14px;">翻訳用 Google API-KEY：</span>
+            <span style="font-size: 14px;" data-i18n="apiKeyLabel">翻訳用 Google API-KEY：</span>
             <input type="text" name="gas_key" id="gas_key" size="30" oninput="updateOptionValues();" style="height: 22px;" />
-            <a target="_blank" href="http://www.sayonari.com/trans_asr/index_asr.html" style="font-size: 11px;">[作成方法]</a>
+            <a target="_blank" href="http://www.sayonari.com/trans_asr/index_asr.html" style="font-size: 11px;" data-i18n="apiKeyHowTo">[作成方法]</a>
         </div>
         <div style="font-size: 13px;">
             <span id="apiModeDisplay">
-                翻訳回数：<span id="displayTransCount">0</span><span style="color: gray; font-size: 11px;">（無料上限5,000回）</span>
+                <span data-i18n="transCount">翻訳回数：</span><span id="displayTransCount">0</span><span style="color: gray; font-size: 11px;" data-i18n="transFreeLimit">（無料上限5,000回）</span>
             </span>
-            　翻訳：<span id="translationStatus" style="font-weight: bold; color: #666;">待機中</span>
+            　<span data-i18n="transLabel">翻訳：</span><span id="translationStatus" style="font-weight: bold; color: #666;" data-i18n="transWaiting">待機中</span>
         </div>
         <div id="chromeTranslationMode" style="display: none; margin-top: 5px; padding: 10px; background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); border-radius: 5px;">
             <div style="margin-bottom: 8px;">
                 <div style="margin-bottom: 8px;">
-                    <span id="chromeTranslationStatus" style="font-size: 14px; font-weight: bold; color: #1a5e3a;">
+                    <span id="chromeTranslationStatus" style="font-size: 14px; font-weight: bold; color: #1a5e3a;" data-i18n="chromeTranslationDetected">
                         🚀 高速翻訳対応Chromeで起動！
                     </span>
                 </div>
-                
+
                 <!-- 翻訳方法選択スイッチ -->
                 <div style="margin-bottom: 8px;">
                     <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                        <span style="font-size: 14px; color: #1a5e3a; font-weight: bold;">翻訳方法：</span>
+                        <span style="font-size: 14px; color: #1a5e3a; font-weight: bold;" data-i18n="translationMethod">翻訳方法：</span>
                         <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 14px; color: #1a5e3a;">
-                            <input type="radio" name="translationMethod" value="chrome" id="translationMethodChrome" 
+                            <input type="radio" name="translationMethod" value="chrome" id="translationMethodChrome"
                                    onchange="switchTranslationMethod()" checked>
-                            Chrome内蔵(高速)
+                            <span data-i18n="chromeBuiltIn">Chrome内蔵(高速)</span>
                         </label>
                         <label style="display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 14px; color: #1a5e3a;">
-                            <input type="radio" name="translationMethod" value="gas" id="translationMethodGas" 
+                            <input type="radio" name="translationMethod" value="gas" id="translationMethodGas"
                                    onchange="switchTranslationMethod()">
-                            GAS API
+                            <span data-i18n="gasApi">GAS API</span>
                         </label>
                     </div>
                 </div>
-                
+
                 <!-- Chrome内蔵翻訳選択時の注意書き -->
                 <div id="chromeTranslationNotice" style="font-size: 12px; color: #666; line-height: 1.3;">
-                    <span id="chromeTranslationNoticeText">※Chrome内蔵(高速)は、Chrome 138以降で使用可能です</span>
+                    <span id="chromeTranslationNoticeText" data-i18n="chromeTranslationNote">※Chrome内蔵(高速)は、Chrome 138以降で使用可能です</span>
                 </div>
             </div>
             <div id="modelDownloadArea" style="display: none; margin-top: 8px; padding: 10px; background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%); border-radius: 5px; border: 2px solid #ffc107;">
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <button id="preloadModelBtn" onclick="preloadTranslationModel()" style="padding: 8px 16px; background: #ff6b6b; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                    <button id="preloadModelBtn" onclick="preloadTranslationModel()" style="padding: 8px 16px; background: #ff6b6b; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);" data-i18n="downloadModel">
                         📥 モデルをダウンロード
                     </button>
-                    <span id="modelQueueStatus" style="padding: 4px 8px; background: rgba(255, 255, 255, 0.8); border-radius: 4px; font-size: 12px; color: #666; font-weight: bold; display: none;">
+                    <span id="modelQueueStatus" style="padding: 4px 8px; background: rgba(255, 255, 255, 0.8); border-radius: 4px; font-size: 12px; color: #666; font-weight: bold; display: none;" data-i18n="modelRemaining">
                         📦 残り0個
                     </span>
                     <span id="modelStatusText" style="font-size: 13px; color: #333; font-weight: bold;"></span>
@@ -207,14 +215,14 @@
 <table style="border-collapse: separate; border-spacing: 0px;">
 <tr>
     <td></td>
-    <td style="text-align: center; width: 50px;">文字色</td>
-    <td style="text-align: center; width: 50px;">フチ色</td>
-    <td style="text-align: center; width: 120px;">サイズ</td>
-    <td style="text-align: center; width: 120px;">ウェイト</td>
-    <td style="text-align: center; width: 120px;">縁取り</td>
+    <td style="text-align: center; width: 50px;" data-i18n="textColor">文字色</td>
+    <td style="text-align: center; width: 50px;" data-i18n="borderColor">フチ色</td>
+    <td style="text-align: center; width: 120px;" data-i18n="size">サイズ</td>
+    <td style="text-align: center; width: 120px;" data-i18n="weight">ウェイト</td>
+    <td style="text-align: center; width: 120px;" data-i18n="border">縁取り</td>
 </tr>
 <tr>
-    <td style="width: 60px;">認識　：</td>
+    <td style="width: 60px;" data-i18n="recognition">認識　：</td>
     <td style="text-align: center;">
         <input id="color1" type="color" value="#ffffff" oninput="changeTextColor('fg',this.value,1); updateOptionValues(only_url=true)" />
     </td>
@@ -235,7 +243,7 @@
     </td>
 </tr>
 <tr>
-    <td>翻訳１：</td>
+    <td data-i18n="translation1">翻訳１：</td>
     <td style="text-align: center;">
         <input id="color2" type="color" value="#ffffff" oninput="changeTextColor('fg',this.value,2); updateOptionValues(only_url=true)" />
     </td>
@@ -256,7 +264,7 @@
     </td>
 </tr>
 <tr>
-    <td>翻訳２：</td>
+    <td data-i18n="translation2">翻訳２：</td>
     <td style="text-align: center;">
         <input id="color3" type="color" value="#ffffff" oninput="changeTextColor('fg',this.value,3); updateOptionValues(only_url=true)" />
     </td>
@@ -277,7 +285,7 @@
     </td>
 </tr>
 <tr>
-    <td>翻訳３：</td>
+    <td data-i18n="translation3">翻訳３：</td>
     <td style="text-align: center;">
         <input id="color4" type="color" value="#ffffff" oninput="changeTextColor('fg',this.value,4); updateOptionValues(only_url=true)" />
     </td>
@@ -299,40 +307,40 @@
 </tr>
 </table>
 
-背景色：<input id="bgcolor" type="color" value="#00ff00" oninput="document.getElementById('asr_frame').contentWindow.document.bgColor=this.value; changeTextColor('imb',this.value,1); updateOptionValues(only_url=true)" />
+<span data-i18n="backgroundColor">背景色：</span><input id="bgcolor" type="color" value="#00ff00" oninput="document.getElementById('asr_frame').contentWindow.document.bgColor=this.value; changeTextColor('imb',this.value,1); updateOptionValues(only_url=true)" />
 
 <HR>
 
 <!-- # 言語選択設定 ######################### -->
-音声認識言語　：
+<span data-i18n="recognitionLanguage">音声認識言語　：</span>
 <select id="recog" onchange="updateOptionValues(only_url=false); checkAllTranslationModels();">
-    <option value="ja" selected>日本語</option>
-    <option value="en-US">英語</option>
-    <option value="ko">韓国語</option>
-    <option value="zh-CN">中国語</option>
-    <option value="zh-TW">台湾語</option>
-    <option value="zh-HK">香港語</option>
-    <option value="fr-FR">フランス語</option>
-    <option value="it-IT">イタリア語</option>
-    <option value="de-DE">ドイツ語</option>
-    <option value="tr-TR">トルコ語</option>
-    <option value="sv-SE">スウェーデン語</option>
-    <option value="pl-PL">ポーランド語</option>
-    <option value="uk-UA">ウクライナ語</option>
-    <option value="ru-RU">ロシア語</option>
-    <option value="es-ES">スペイン語</option>
-    <option value="pt-PT">ポルトガル語</option>
-    <option value="nl-NL">オランダ語</option>
-    <option value="id-ID">インドネシア語</option>
-    <option value="vi-VN">ベトナム語</option>
-    <option value="th-TH">タイ語</option>
-    <option value="ar-SA">アラビア語</option>
-    <option value="el-GR">ギリシャ語</option>
-</select>　　
+    <option value="ja" selected data-i18n="langJapanese">日本語</option>
+    <option value="en-US" data-i18n="langEnglish">英語</option>
+    <option value="ko" data-i18n="langKorean">韓国語</option>
+    <option value="zh-CN" data-i18n="langChinese">中国語</option>
+    <option value="zh-TW" data-i18n="langTaiwanese">台湾語</option>
+    <option value="zh-HK" data-i18n="langHongKong">香港語</option>
+    <option value="fr-FR" data-i18n="langFrench">フランス語</option>
+    <option value="it-IT" data-i18n="langItalian">イタリア語</option>
+    <option value="de-DE" data-i18n="langGerman">ドイツ語</option>
+    <option value="tr-TR" data-i18n="langTurkish">トルコ語</option>
+    <option value="sv-SE" data-i18n="langSwedish">スウェーデン語</option>
+    <option value="pl-PL" data-i18n="langPolish">ポーランド語</option>
+    <option value="uk-UA" data-i18n="langUkrainian">ウクライナ語</option>
+    <option value="ru-RU" data-i18n="langRussian">ロシア語</option>
+    <option value="es-ES" data-i18n="langSpanish">スペイン語</option>
+    <option value="pt-PT" data-i18n="langPortuguese">ポルトガル語</option>
+    <option value="nl-NL" data-i18n="langDutch">オランダ語</option>
+    <option value="id-ID" data-i18n="langIndonesian">インドネシア語</option>
+    <option value="vi-VN" data-i18n="langVietnamese">ベトナム語</option>
+    <option value="th-TH" data-i18n="langThai">タイ語</option>
+    <option value="ar-SA" data-i18n="langArabic">アラビア語</option>
+    <option value="el-GR" data-i18n="langGreek">ギリシャ語</option>
+</select>
 
-フォント　：
+<span data-i18n="font">フォント　：</span>
 <select name="speech_text_font_selector" id="speech_text_font_selector" onchange="applySelectedFont(this, 'speech_text'); selectFont(); updateOptionValues();">
-    <option value="direct">[PC内フォント]</option>
+    <option value="direct" data-i18n="pcFontOption">[PC内フォント]</option>
     <option value="M PLUS\\ 1p">M PLUS 1p</option>
     <option value="M PLUS Rounded\\ 1c" selected>M PLUS Rounded 1c</option>
     <option value="Mamelon">マメロン</option>
@@ -360,40 +368,40 @@
     <option value="Noto Sans JP">Noto Sans JP</option>
     <option value="Sawarabi Gothic">さわらびゴシック</option>
     <option value="Nico Moji">ニコモジ</option>
-</select>　
-PC内フォント：<select id="speech_text_system_font" onchange="applySystemFont(this.value, 'speech_text'); updateOptionValues();"></select>
-<input type="text" id="speech_text_direct_font" placeholder="フォント名を入力" style="width: 200px; margin-left: 10px;" disabled oninput="applyDirectFont(this.value, 'speech_text'); updateOptionValues();">
+</select>
+<span data-i18n="pcFont">PC内フォント：</span><select id="speech_text_system_font" onchange="applySystemFont(this.value, 'speech_text'); updateOptionValues();"></select>
+<input type="text" id="speech_text_direct_font" data-i18n-placeholder="fontPlaceholder" placeholder="フォント名を入力" style="width: 200px; margin-left: 10px;" disabled oninput="applyDirectFont(this.value, 'speech_text'); updateOptionValues();">
 <span id="font_api_status" style="font-size: 12px; margin-left: 10px;"></span><br>
 
-翻訳言語（１）：
+<span data-i18n="translationLang1">翻訳言語（１）：</span>
 <select id="trans" onchange="updateOptionValues(only_url=false, transNum=1); checkTranslationModel(1, event);">
-    <option value="none" selected>なし</option>
-    <option value="ja">日本語</option>
-    <option value="en">英語</option>
-    <option value="ko">韓国語</option>
-    <option value="zh-CN">中国語</option>
-    <option value="zh-TW">台湾語</option>
-    <option value="zh-HK">香港語</option>
-    <option value="fr">フランス語</option>
-    <option value="it">イタリア語</option>
-    <option value="de">ドイツ語</option>
-    <option value="tr">トルコ語</option>
-    <option value="sv">スウェーデン語</option>
-    <option value="pl">ポーランド語</option>
-    <option value="uk">ウクライナ語</option>
-    <option value="ru">ロシア語</option>
-    <option value="es">スペイン語</option>
-    <option value="pt">ポルトガル語</option>
-    <option value="nl">オランダ語</option>
-    <option value="id">インドネシア語</option>
-    <option value="vi">ベトナム語</option>
-    <option value="th">タイ語</option>
-    <option value="ar">アラビア語</option>
-    <option value="so">ソマリ語</option>
-    <option value="el">ギリシャ語</option>
-</select>　　
+    <option value="none" selected data-i18n="langNone">なし</option>
+    <option value="ja" data-i18n="langJapanese">日本語</option>
+    <option value="en" data-i18n="langEnglish">英語</option>
+    <option value="ko" data-i18n="langKorean">韓国語</option>
+    <option value="zh-CN" data-i18n="langChinese">中国語</option>
+    <option value="zh-TW" data-i18n="langTaiwanese">台湾語</option>
+    <option value="zh-HK" data-i18n="langHongKong">香港語</option>
+    <option value="fr" data-i18n="langFrench">フランス語</option>
+    <option value="it" data-i18n="langItalian">イタリア語</option>
+    <option value="de" data-i18n="langGerman">ドイツ語</option>
+    <option value="tr" data-i18n="langTurkish">トルコ語</option>
+    <option value="sv" data-i18n="langSwedish">スウェーデン語</option>
+    <option value="pl" data-i18n="langPolish">ポーランド語</option>
+    <option value="uk" data-i18n="langUkrainian">ウクライナ語</option>
+    <option value="ru" data-i18n="langRussian">ロシア語</option>
+    <option value="es" data-i18n="langSpanish">スペイン語</option>
+    <option value="pt" data-i18n="langPortuguese">ポルトガル語</option>
+    <option value="nl" data-i18n="langDutch">オランダ語</option>
+    <option value="id" data-i18n="langIndonesian">インドネシア語</option>
+    <option value="vi" data-i18n="langVietnamese">ベトナム語</option>
+    <option value="th" data-i18n="langThai">タイ語</option>
+    <option value="ar" data-i18n="langArabic">アラビア語</option>
+    <option value="so" data-i18n="langSomali">ソマリ語</option>
+    <option value="el" data-i18n="langGreek">ギリシャ語</option>
+</select>
 
-フォント　：
+<span data-i18n="font">フォント　：</span>
 <select name="trans_text_font_selector" id="trans_text_font_selector" onchange="applySelectedFont(this, 'trans_text'); selectFont(); updateOptionValues();">
     <option value="direct">[PC内フォント]</option>
     <option value="M PLUS\\ 1p">M PLUS 1p</option>
@@ -424,38 +432,38 @@ PC内フォント：<select id="speech_text_system_font" onchange="applySystemFo
     <option value="Sawarabi Gothic">さわらびゴシック</option>
     <option value="Nico Moji">ニコモジ</option>
 </select>　
-PC内フォント：<select id="trans_text_system_font" onchange="applySystemFont(this.value, 'trans_text'); updateOptionValues();"></select>
-<input type="text" id="trans_text_direct_font" placeholder="フォント名を入力" style="width: 200px; margin-left: 10px;" disabled oninput="applyDirectFont(this.value, 'trans_text'); updateOptionValues();"><br>
+<span data-i18n="pcFont">PC内フォント：</span><select id="trans_text_system_font" onchange="applySystemFont(this.value, 'trans_text'); updateOptionValues();"></select>
+<input type="text" id="trans_text_direct_font" data-i18n-placeholder="fontPlaceholder" placeholder="フォント名を入力" style="width: 200px; margin-left: 10px;" disabled oninput="applyDirectFont(this.value, 'trans_text'); updateOptionValues();"><br>
 
-翻訳言語（２）：
+<span data-i18n="translationLang2">翻訳言語（２）：</span>
 <select id="trans2" onchange="updateOptionValues(only_url=false, transNum=2); checkTranslationModel(2, event);">
-    <option value="none" selected>なし</option>
-    <option value="ja">日本語</option>
-    <option value="en">英語</option>
-    <option value="ko">韓国語</option>
-    <option value="zh-CN">中国語</option>
-    <option value="zh-TW">台湾語</option>
-    <option value="zh-HK">香港語</option>
-    <option value="fr">フランス語</option>
-    <option value="it">イタリア語</option>
-    <option value="de">ドイツ語</option>
-    <option value="tr">トルコ語</option>
-    <option value="sv">スウェーデン語</option>
-    <option value="pl">ポーランド語</option>
-    <option value="uk">ウクライナ語</option>
-    <option value="ru">ロシア語</option>
-    <option value="es">スペイン語</option>
-    <option value="pt">ポルトガル語</option>
-    <option value="nl">オランダ語</option>
-    <option value="id">インドネシア語</option>
-    <option value="vi">ベトナム語</option>
-    <option value="th">タイ語</option>
-    <option value="ar">アラビア語</option>
-    <option value="so">ソマリ語</option>
-    <option value="el">ギリシャ語</option>
-</select>　　
+    <option value="none" selected data-i18n="langNone">なし</option>
+    <option value="ja" data-i18n="langJapanese">日本語</option>
+    <option value="en" data-i18n="langEnglish">英語</option>
+    <option value="ko" data-i18n="langKorean">韓国語</option>
+    <option value="zh-CN" data-i18n="langChinese">中国語</option>
+    <option value="zh-TW" data-i18n="langTaiwanese">台湾語</option>
+    <option value="zh-HK" data-i18n="langHongKong">香港語</option>
+    <option value="fr" data-i18n="langFrench">フランス語</option>
+    <option value="it" data-i18n="langItalian">イタリア語</option>
+    <option value="de" data-i18n="langGerman">ドイツ語</option>
+    <option value="tr" data-i18n="langTurkish">トルコ語</option>
+    <option value="sv" data-i18n="langSwedish">スウェーデン語</option>
+    <option value="pl" data-i18n="langPolish">ポーランド語</option>
+    <option value="uk" data-i18n="langUkrainian">ウクライナ語</option>
+    <option value="ru" data-i18n="langRussian">ロシア語</option>
+    <option value="es" data-i18n="langSpanish">スペイン語</option>
+    <option value="pt" data-i18n="langPortuguese">ポルトガル語</option>
+    <option value="nl" data-i18n="langDutch">オランダ語</option>
+    <option value="id" data-i18n="langIndonesian">インドネシア語</option>
+    <option value="vi" data-i18n="langVietnamese">ベトナム語</option>
+    <option value="th" data-i18n="langThai">タイ語</option>
+    <option value="ar" data-i18n="langArabic">アラビア語</option>
+    <option value="so" data-i18n="langSomali">ソマリ語</option>
+    <option value="el" data-i18n="langGreek">ギリシャ語</option>
+</select>
 
-フォント　：
+<span data-i18n="font">フォント　：</span>
 <select name="trans_text2_font_selector" id="trans_text2_font_selector" onchange="applySelectedFont(this, 'trans_text2'); selectFont(); updateOptionValues();">
     <option value="direct">[PC内フォント]</option>
     <option value="M PLUS\\ 1p">M PLUS 1p</option>
@@ -486,38 +494,38 @@ PC内フォント：<select id="trans_text_system_font" onchange="applySystemFon
     <option value="Sawarabi Gothic">さわらびゴシック</option>
     <option value="Nico Moji">ニコモジ</option>
 </select>　
-PC内フォント：<select id="trans_text2_system_font" onchange="applySystemFont(this.value, 'trans_text2'); updateOptionValues();"></select>
-<input type="text" id="trans_text2_direct_font" placeholder="フォント名を入力" style="width: 200px; margin-left: 10px;" disabled oninput="applyDirectFont(this.value, 'trans_text2'); updateOptionValues();"><br>
+<span data-i18n="pcFont">PC内フォント：</span><select id="trans_text2_system_font" onchange="applySystemFont(this.value, 'trans_text2'); updateOptionValues();"></select>
+<input type="text" id="trans_text2_direct_font" data-i18n-placeholder="fontPlaceholder" placeholder="フォント名を入力" style="width: 200px; margin-left: 10px;" disabled oninput="applyDirectFont(this.value, 'trans_text2'); updateOptionValues();"><br>
 
-翻訳言語（３）：
+<span data-i18n="translationLang3">翻訳言語（３）：</span>
 <select id="trans3" onchange="updateOptionValues(only_url=false, transNum=3); checkTranslationModel(3, event);">
-    <option value="none" selected>なし</option>
-    <option value="ja">日本語</option>
-    <option value="en">英語</option>
-    <option value="ko">韓国語</option>
-    <option value="zh-CN">中国語</option>
-    <option value="zh-TW">台湾語</option>
-    <option value="zh-HK">香港語</option>
-    <option value="fr">フランス語</option>
-    <option value="it">イタリア語</option>
-    <option value="de">ドイツ語</option>
-    <option value="tr">トルコ語</option>
-    <option value="sv">スウェーデン語</option>
-    <option value="pl">ポーランド語</option>
-    <option value="uk">ウクライナ語</option>
-    <option value="ru">ロシア語</option>
-    <option value="es">スペイン語</option>
-    <option value="pt">ポルトガル語</option>
-    <option value="nl">オランダ語</option>
-    <option value="id">インドネシア語</option>
-    <option value="vi">ベトナム語</option>
-    <option value="th">タイ語</option>
-    <option value="ar">アラビア語</option>
-    <option value="so">ソマリ語</option>
-    <option value="el">ギリシャ語</option>
-</select>　　
+    <option value="none" selected data-i18n="langNone">なし</option>
+    <option value="ja" data-i18n="langJapanese">日本語</option>
+    <option value="en" data-i18n="langEnglish">英語</option>
+    <option value="ko" data-i18n="langKorean">韓国語</option>
+    <option value="zh-CN" data-i18n="langChinese">中国語</option>
+    <option value="zh-TW" data-i18n="langTaiwanese">台湾語</option>
+    <option value="zh-HK" data-i18n="langHongKong">香港語</option>
+    <option value="fr" data-i18n="langFrench">フランス語</option>
+    <option value="it" data-i18n="langItalian">イタリア語</option>
+    <option value="de" data-i18n="langGerman">ドイツ語</option>
+    <option value="tr" data-i18n="langTurkish">トルコ語</option>
+    <option value="sv" data-i18n="langSwedish">スウェーデン語</option>
+    <option value="pl" data-i18n="langPolish">ポーランド語</option>
+    <option value="uk" data-i18n="langUkrainian">ウクライナ語</option>
+    <option value="ru" data-i18n="langRussian">ロシア語</option>
+    <option value="es" data-i18n="langSpanish">スペイン語</option>
+    <option value="pt" data-i18n="langPortuguese">ポルトガル語</option>
+    <option value="nl" data-i18n="langDutch">オランダ語</option>
+    <option value="id" data-i18n="langIndonesian">インドネシア語</option>
+    <option value="vi" data-i18n="langVietnamese">ベトナム語</option>
+    <option value="th" data-i18n="langThai">タイ語</option>
+    <option value="ar" data-i18n="langArabic">アラビア語</option>
+    <option value="so" data-i18n="langSomali">ソマリ語</option>
+    <option value="el" data-i18n="langGreek">ギリシャ語</option>
+</select>
 
-フォント　：
+<span data-i18n="font">フォント　：</span>
 <select name="trans_text3_font_selector" id="trans_text3_font_selector" onchange="applySelectedFont(this, 'trans_text3'); selectFont(); updateOptionValues();">
     <option value="direct">[PC内フォント]</option>
     <option value="M PLUS\\ 1p">M PLUS 1p</option>
@@ -548,27 +556,27 @@ PC内フォント：<select id="trans_text2_system_font" onchange="applySystemFo
     <option value="Sawarabi Gothic">さわらびゴシック</option>
     <option value="Nico Moji">ニコモジ</option>
 </select>　
-PC内フォント：<select id="trans_text3_system_font" onchange="applySystemFont(this.value, 'trans_text3'); updateOptionValues();"></select>
-<input type="text" id="trans_text3_direct_font" placeholder="フォント名を入力" style="width: 200px; margin-left: 10px;" disabled oninput="applyDirectFont(this.value, 'trans_text3'); updateOptionValues();"><br>
+<span data-i18n="pcFont">PC内フォント：</span><select id="trans_text3_system_font" onchange="applySystemFont(this.value, 'trans_text3'); updateOptionValues();"></select>
+<input type="text" id="trans_text3_direct_font" data-i18n-placeholder="fontPlaceholder" placeholder="フォント名を入力" style="width: 200px; margin-left: 10px;" disabled oninput="applyDirectFont(this.value, 'trans_text3'); updateOptionValues();"><br>
 
 <HR>
 <!-- # 行間調整 ######################### -->
 <div style="background-color: #f0f0f0; padding: 8px; border-radius: 5px; margin: 5px 0;">
-    <strong>行間：</strong>
-    認識→翻訳１
-    <input type="range" id="line_spacing_1" min="0" max="50" value="0" 
+    <strong data-i18n="lineSpacing">行間：</strong>
+    <span data-i18n="lineSpacingRecogToTrans1">認識→翻訳１</span>
+    <input type="range" id="line_spacing_1" min="0" max="50" value="0"
            oninput="document.getElementById('line_spacing_1_value').textContent = this.value + 'px'; updateLineSpacing('speech_text', this.value); updateOptionValues();"
            style="width: 80px; vertical-align: middle;">
     <span id="line_spacing_1_value" style="display: inline-block; width: 35px; text-align: right;">0px</span>
-    　
-    翻訳１→２
-    <input type="range" id="line_spacing_2" min="0" max="50" value="0" 
+
+    <span data-i18n="lineSpacingTrans1To2">翻訳１→２</span>
+    <input type="range" id="line_spacing_2" min="0" max="50" value="0"
            oninput="document.getElementById('line_spacing_2_value').textContent = this.value + 'px'; updateLineSpacing('trans_text', this.value); updateOptionValues();"
            style="width: 80px; vertical-align: middle;">
     <span id="line_spacing_2_value" style="display: inline-block; width: 35px; text-align: right;">0px</span>
-    　
-    翻訳２→３
-    <input type="range" id="line_spacing_3" min="0" max="50" value="0" 
+
+    <span data-i18n="lineSpacingTrans2To3">翻訳２→３</span>
+    <input type="range" id="line_spacing_3" min="0" max="50" value="0"
            oninput="document.getElementById('line_spacing_3_value').textContent = this.value + 'px'; updateLineSpacing('trans_text2', this.value); updateOptionValues();"
            style="width: 80px; vertical-align: middle;">
     <span id="line_spacing_3_value" style="display: inline-block; width: 35px; text-align: right;">0px</span>
@@ -576,25 +584,25 @@ PC内フォント：<select id="trans_text3_system_font" onchange="applySystemFo
 
 <HR>
 <!-- # テキストの揃え ######################### -->
-テキストの位置：　
-左右：
+<span data-i18n="textPosition">テキストの位置：　</span>
+<span data-i18n="horizontal">左右：</span>
 <select id="textAlign" onchange="updateOptionValues()">
-    <option value="left">左寄せ</option>
-    <option value="center" selected>中央寄せ</option>
-    <option value="right">右寄せ</option>
+    <option value="left" data-i18n="alignLeft">左寄せ</option>
+    <option value="center" selected data-i18n="alignCenter">中央寄せ</option>
+    <option value="right" data-i18n="alignRight">右寄せ</option>
 </select>
 
-　上下：
+　<span data-i18n="vertical">上下：</span>
 <select id="v_align" onchange="updateOptionValues()">
-    <option value="top" selected>上</option>
-    <option value="bottom">下</option>
+    <option value="top" selected data-i18n="alignTop">上</option>
+    <option value="bottom" data-i18n="alignBottom">下</option>
 </select><BR>
 
 <!-- # テキストの改行 ######################### -->
-テキストの改行：
+<span data-i18n="textWrapping">テキストの改行：</span>
 <select id="whiteSpace" onchange="updateOptionValues()">
-    <option value="nowrap">改行しない</option>
-    <option value="" selected>画面端で改行</option>
+    <option value="nowrap" data-i18n="noWrap">改行しない</option>
+    <option value="" selected data-i18n="wrapAtEdge">画面端で改行</option>
 </select><BR>
 <HR>
 
@@ -610,32 +618,32 @@ PC内フォント：<select id="trans_text3_system_font" onchange="applySystemFo
 <HR>
 
 <!-- # テキスト表示を●秒後に消す ######################### -->
-何ミリ秒後に文を消す？　　　：　
-<input type="text" name="timer" id="timer" size="10" oninput="updateOptionValues();" />ミリ秒　
+<span data-i18n="timerClearText">何ミリ秒後に文を消す？　　　：　</span>
+<input type="text" name="timer" id="timer" size="10" oninput="updateOptionValues();" /><span data-i18n="timerUnit">ミリ秒　</span>
 <span style="display: inline-block; vertical-align: middle;">
     <!-- 音声認識用タイマーバー（左） -->
     <div id="speechTimerProgressContainer" style="display: inline-block; width: 140px; height: 26px; background: linear-gradient(135deg, #fff5f5 0%, #ffd0cc 100%); border: 2px solid #cc8888; border-radius: 13px; margin-left: 10px; position: relative; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">
         <div id="speechTimerProgressBar" style="height: 100%; background: linear-gradient(90deg, #FF6B6B 0%, #FFA07A 50%, #FFE4E1 100%); width: 0%; transition: width 0.1s linear; border-radius: 11px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
-        <div id="speechTimerProgressText" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 13px; font-weight: bold; color: #333; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); letter-spacing: 0.5px;">🎤待機</div>
+        <div id="speechTimerProgressText" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 13px; font-weight: bold; color: #333; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); letter-spacing: 0.5px;" data-i18n="timerSpeechWaiting">🎤待機</div>
     </div>
     <!-- 翻訳用タイマーバー（右） -->
     <div id="transTimerProgressContainer" style="display: inline-block; width: 140px; height: 26px; background: linear-gradient(135deg, #f0f8ff 0%, #cce7ff 100%); border: 2px solid #8888cc; border-radius: 13px; margin-left: 8px; position: relative; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);">
         <div id="transTimerProgressBar" style="height: 100%; background: linear-gradient(90deg, #2196F3 0%, #64B5F6 50%, #BBDEFB 100%); width: 0%; transition: width 0.1s linear; border-radius: 11px; box-shadow: 0 2px 4px rgba(0,0,0,0.2);"></div>
-        <div id="transTimerProgressText" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 13px; font-weight: bold; color: #333; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); letter-spacing: 0.5px;">🌐待機</div>
+        <div id="transTimerProgressText" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 13px; font-weight: bold; color: #333; text-shadow: 1px 1px 2px rgba(255,255,255,0.8); letter-spacing: 0.5px;" data-i18n="timerTransWaiting">🌐待機</div>
     </div>
 </span><BR>
 
 <!-- # 文の終わり ######################### -->
-何ミリ秒黙ったら文を区切る？：　
-<input type="text" name="short_pause" value="750" id="short_pause" size="10" oninput="updateOptionValues();" />ミリ秒（半角数字で入れてね．1000ミリ秒 = 1秒）<BR>
-（500：すぐ切る｜750：普通｜1000：つなぐ　調整して．何も入れないと，これまでと同じ動作になる．）<BR>
+<span data-i18n="shortPauseLabel">何ミリ秒黙ったら文を区切る？：　</span>
+<input type="text" name="short_pause" value="750" id="short_pause" size="10" oninput="updateOptionValues();" /><span data-i18n="shortPauseNote">ミリ秒（半角数字で入れてね．1000ミリ秒 = 1秒）</span><BR>
+<span data-i18n="shortPauseHint">（500：すぐ切る｜750：普通｜1000：つなぐ　調整して．何も入れないと，これまでと同じ動作になる．）</span><BR>
 <HR>
 
 
 <!-- # 棒読みちゃん連携 ######################### -->
-- 棒読みちゃん連携を使う：<input type="checkbox" id="bouyomi" onchange="updateOptionValues()"> ← 使う場合チェック入れる．詳細 → <a target="_blank" href="https://twitter.com/sayonari/status/1386937837682003968">twitter</a><BR>
+<span data-i18n="bouyomiLabel">- 棒読みちゃん連携を使う：</span><input type="checkbox" id="bouyomi" onchange="updateOptionValues()"><span data-i18n="bouyomiNote"> ← 使う場合チェック入れる．詳細 → </span><a target="_blank" href="https://twitter.com/sayonari/status/1386937837682003968">twitter</a><BR>
 <!-- # センシティブワード対応する！ ######################### -->
-- センシティブワード対応（***に置き換え）を<font color="red">やめる</font>：<input type="checkbox" id="anti_sexual" onchange="updateOptionValues()"> <BR>
+<span data-i18n="sensitiveWordLabel">- センシティブワード対応（***に置き換え）を</span><font color="red"><span data-i18n="sensitiveWordDisable">やめる</span></font><span data-i18n="sensitiveWordNote">：</span><input type="checkbox" id="anti_sexual" onchange="updateOptionValues()"> <BR>
 <HR>
 
 <!-- # URL view & copy button ############### -->
@@ -647,22 +655,22 @@ PC内フォント：<select id="trans_text3_system_font" onchange="applySystemFo
 <!-- <HR> -->
 
 <!-- # 設定セーブ＆ロードボタン ################## -->
-　<button onclick="saveSettings()">設定ファイルをPCに保存</button>　
-<button onclick="loadSettings()">設定ファイルをブラウザに読込</button>　：設定が完成したら，設定ファイルを保存しておきましょう　<BR>
+　<button onclick="saveSettings()" data-i18n="saveSettings">設定ファイルをPCに保存</button>
+<button onclick="loadSettings()" data-i18n="loadSettings">設定ファイルをブラウザに読込</button>　<span data-i18n="saveLoadNote">：設定が完成したら，設定ファイルを保存しておきましょう　</span><BR>
 
 <HR>
 
 <!-- # .bat download ボタン ############################## -->
-.bat ファイル生成：<BR>
-これ使ったら，<font color="red">全画面ゲームしてても止まらない！</font>詳しくはこちら→（<a target="_blank" href="https://www.youtube.com/watch?v=8-UXx_tVeYk">解説動画</a>）<BR>
-.batファイルと，設定ファイルをダウンロードしてください．<BR>
+<span data-i18n="batFileTitle">.bat ファイル生成：</span><BR>
+<span data-i18n="batFileDesc">これ使ったら，</span><font color="red"><span data-i18n="batFileHighlight">全画面ゲームしてても止まらない！</span></font><span data-i18n="batFileDescEnd">詳しくはこちら→（</span><a target="_blank" href="https://www.youtube.com/watch?v=8-UXx_tVeYk"><span data-i18n="batFileVideo">解説動画</span></a>）<BR>
+<span data-i18n="batFileInstruction">.batファイルと，設定ファイルをダウンロードしてください．</span><BR>
 
 <table border="1" style="width: auto;"><tr><td>
 <table style="width: auto;">
     <tr>
-        <td width="180">Windowsの人：</td>
-        <td><button onclick="generateBatFile('win')">Windows用 起動 .batファイル生成</button></td>
-        <td><button onclick="saveSettings()">設定ファイルをPCに保存</button></td>
+        <td width="180" data-i18n="forWindows">Windowsの人：</td>
+        <td><button onclick="generateBatFile('win')" data-i18n="generateWinBat">Windows用 起動 .batファイル生成</button></td>
+        <td><button onclick="saveSettings()" data-i18n="saveSettings">設定ファイルをPCに保存</button></td>
     </tr>
 </tr>
 </table>
@@ -672,9 +680,9 @@ PC内フォント：<select id="trans_text3_system_font" onchange="applySystemFo
 <table border="1" style="width: auto;"><tr><td>
 <table style="width: auto;">
     <tr>
-        <td width="180">Macの人：</td>
-        <td><button onclick="generateBatFile('mac')">Mac用 起動 .commandファイル生成</button></td>
-        <td><button onclick="saveSettings()">設定ファイルをPCに保存</button></td>
+        <td width="180" data-i18n="forMac">Macの人：</td>
+        <td><button onclick="generateBatFile('mac')" data-i18n="generateMacCommand">Mac用 起動 .commandファイル生成</button></td>
+        <td><button onclick="saveSettings()" data-i18n="saveSettings">設定ファイルをPCに保存</button></td>
     </tr>
 </table>
 </td></tr></table>
