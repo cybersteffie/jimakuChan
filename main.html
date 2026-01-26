@@ -223,7 +223,11 @@
 
 
         var gas_key = getParam('gas_key');
-        
+
+        // 認識途中マーカー設定（デフォルト値：<< と >>）
+        var interimMarkerLeft = getParam('interim_marker_left') ? decodeURIComponent(getParam('interim_marker_left')) : ' << ';
+        var interimMarkerRight = getParam('interim_marker_right') ? decodeURIComponent(getParam('interim_marker_right')) : ' >>';
+
         var TRANS_URL = 'https://script.google.com/macros/s/' + gas_key + '/exec';
         var query = ''
 
@@ -1726,7 +1730,7 @@
                             displayHtml += filteredFinalText;
                         }
                         if (filteredInterimText !== '') {
-                            displayHtml += ' << ' + filteredInterimText + ' >>';
+                            displayHtml += interimMarkerLeft + filteredInterimText + interimMarkerRight;
                         }
                         
                         document.getElementById('speech_text-imb').innerHTML = displayHtml;
@@ -1829,7 +1833,7 @@
 <script type="text/javascript">
 
 // バージョン情報の表示 ---------------------------------
-const SoftwareVersion = "2025.12.02 13:48";
+const SoftwareVersion = "2026.01.26 18:34";
 
 // 言語設定を取得（localStorageから、なければ日本語）
 const currentLang = localStorage.getItem('jimakuChan_language') || 'ja';

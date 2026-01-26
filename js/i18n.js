@@ -40,11 +40,10 @@ const i18n = {
             transWaiting: "待機中",
 
             // Chrome Translation
-            chromeTranslationDetected: "🚀 高速翻訳対応Chromeで起動！",
+            chromeTranslationDetected: "🚀 高速翻訳対応Chromeで起動されています",
             translationMethod: "翻訳方法：",
             chromeBuiltIn: "Chrome内蔵(高速)",
             gasApi: "GAS API",
-            chromeTranslationNote: "※Chrome内蔵(高速)は、Chrome 138以降で使用可能です",
             downloadModel: "📥 モデルをダウンロード",
             modelRemaining: "📦 残り0個",
 
@@ -96,6 +95,11 @@ const i18n = {
             langArabic: "アラビア語",
             langSomali: "ソマリ語",
             langGreek: "ギリシャ語",
+
+            // Interim text markers
+            interimTextMarker: "認識途中文字：",
+            interimTextLeft: "左側",
+            interimTextRight: "右側",
 
             // Line spacing
             lineSpacing: "行間：",
@@ -200,11 +204,10 @@ const i18n = {
             transWaiting: "Waiting",
 
             // Chrome Translation
-            chromeTranslationDetected: "🚀 Fast translation Chrome detected!",
+            chromeTranslationDetected: "🚀 Fast translation Chrome is running",
             translationMethod: "Translation method:",
             chromeBuiltIn: "Chrome Built-in (Fast)",
             gasApi: "GAS API",
-            chromeTranslationNote: "※Chrome Built-in requires Chrome 138 or later",
             downloadModel: "📥 Download Model",
             modelRemaining: "📦 0 remaining",
 
@@ -256,6 +259,11 @@ const i18n = {
             langArabic: "Arabic",
             langSomali: "Somali",
             langGreek: "Greek",
+
+            // Interim text markers
+            interimTextMarker: "Interim Text:",
+            interimTextLeft: "Left",
+            interimTextRight: "Right",
 
             // Line spacing
             lineSpacing: "Line Spacing:",
