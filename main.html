@@ -235,6 +235,41 @@
         var bouyomi = getParam('bouyomi');
         var anti_sexual = getParam('anti_sexual');
         
+        // 語句置換ルールの読み込み
+        var arg_word_replace_rules = getParam('word_replace_rules');
+        var wordReplaceRules = [];
+        if (arg_word_replace_rules) {
+            try {
+                const rulesText = decodeURIComponent(arg_word_replace_rules);
+                rulesText.split('\n').forEach(line => {
+                    line = line.trim();
+                    if (line === '') return;
+                    const arrowIdx = line.indexOf('→');
+                    if (arrowIdx > 0) {
+                        const from = line.substring(0, arrowIdx).trim();
+                        const to = line.substring(arrowIdx + 1).trim();
+                        if (from !== '') {
+                            wordReplaceRules.push({ from: from, to: to });
+                        }
+                    }
+                });
+                console.log('語句置換ルールを読み込みました:', wordReplaceRules.length + '件');
+            } catch (error) {
+                console.error('語句置換ルールの解析に失敗:', error);
+            }
+        }
+
+        // 語句置換適用関数
+        function applyWordReplace(text) {
+            if (wordReplaceRules.length === 0) return text;
+            let result = text;
+            for (const rule of wordReplaceRules) {
+                const regex = new RegExp(rule.from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+                result = result.replace(regex, rule.to);
+            }
+            return result;
+        }
+
         // カスタム辞書の準備
         var customDictionary = {};
         if (arg_useCustomDictionary === 'true' && arg_customDictionary) {
@@ -1258,6 +1293,10 @@
                     }
                 }
 
+                // 語句置換を適用
+                finalText = applyWordReplace(finalText);
+                interimText = applyWordReplace(interimText);
+
                 // フィルタリングを適用
                 var filteredFinalText = applyContentFilter(finalText);
                 var filteredInterimText = applyContentFilter(interimText);
@@ -1833,7 +1872,7 @@
 <script type="text/javascript">
 
 // バージョン情報の表示 ---------------------------------
-const SoftwareVersion = "2026.01.26 18:34";
+const SoftwareVersion = "2026.02.16 01:35";
 
 // 言語設定を取得（localStorageから、なければ日本語）
 const currentLang = localStorage.getItem('jimakuChan_language') || 'ja';

@@ -101,6 +101,11 @@ const i18n = {
             interimTextLeft: "左側",
             interimTextRight: "右側",
 
+            // Word replacement
+            wordReplaceTitle: "語句置換：",
+            wordReplaceDesc: "1行に1つ「置換前→置換後」の形式で入力",
+            wordReplacePlaceholder: "例：にしむら→西村\nじまく→字幕",
+
             // Line spacing
             lineSpacing: "行間：",
             lineSpacingRecogToTrans1: "認識→翻訳１",
@@ -264,6 +269,11 @@ const i18n = {
             interimTextMarker: "Interim Text:",
             interimTextLeft: "Left",
             interimTextRight: "Right",
+
+            // Word replacement
+            wordReplaceTitle: "Word Replace:",
+            wordReplaceDesc: "One rule per line: \"before→after\"",
+            wordReplacePlaceholder: "e.g.: nishimura→Nishimura\njimaku→Subtitle",
 
             // Line spacing
             lineSpacing: "Line Spacing:",

@@ -554,6 +554,16 @@
     <input type="text" id="interim_marker_right" value=" >>" size="6" oninput="updateInterimMarkers(); updateOptionValues();" style="text-align: center;">
 </div>
 
+<!-- # 語句置換設定 ######################### -->
+<div style="background-color: #fff3e0; padding: 8px; border-radius: 5px; margin: 5px 0;">
+    <strong data-i18n="wordReplaceTitle">語句置換：</strong>
+    <span data-i18n="wordReplaceDesc" style="font-size: 12px; color: #666;">1行に1つ「置換前→置換後」の形式で入力</span><br>
+    <textarea id="word_replace_rules" rows="3" cols="50"
+              data-i18n-placeholder="wordReplacePlaceholder" placeholder="例：にしむら→西村&#10;じまく→字幕"
+              oninput="updateOptionValues();"
+              style="font-size: 12px; margin-top: 4px; resize: vertical;"></textarea>
+</div>
+
 <!-- # 行間調整 ######################### -->
 <div style="background-color: #f0f0f0; padding: 8px; border-radius: 5px; margin: 5px 0;">
     <strong data-i18n="lineSpacing">行間：</strong>
@@ -772,6 +782,7 @@ window.addEventListener('DOMContentLoaded', function() {
         , "speech_text_direct_font", "trans_text_direct_font", "trans_text2_direct_font", "trans_text3_direct_font"
         , "line_spacing_1", "line_spacing_2", "line_spacing_3"
         , "interim_marker_left", "interim_marker_right"
+        , "word_replace_rules"
         , "translation_method"];
 
     // 新版：全設定はjimakuChan_presetsで管理（jimakuChan_configは廃止）
@@ -1180,6 +1191,9 @@ window.addEventListener('DOMContentLoaded', function() {
         // 認識途中マーカー設定
         if(interim_marker_left != '') {new_url = new_url + "&interim_marker_left=" + encodeURIComponent(interim_marker_left);}
         if(interim_marker_right != '') {new_url = new_url + "&interim_marker_right=" + encodeURIComponent(interim_marker_right);}
+
+        // 語句置換設定
+        if(word_replace_rules != '') {new_url = new_url + "&word_replace_rules=" + encodeURIComponent(word_replace_rules);}
 
         if(bouyomi == true) {new_url = new_url + "&bouyomi=" + bouyomi;}
         // anti_sexualは、チェックON=削除をやめる(false)、チェックOFF=削除する(true)
@@ -1859,11 +1873,11 @@ window.addEventListener('DOMContentLoaded', function() {
       let content, filename;
   
       if (os === 'win') {
-        content = `@echo off\r\nset "USERPROFILE=%LOCALAPPDATA%\\Google\\Chrome\\User Data\\user_jimaku_001"\r\nstart chrome.exe --disable-features=CalculateNativeWinOcclusion --user-data-dir="%USERPROFILE%" --new-window "${url}"\r\nexit /b`;
+        content = `@echo off\r\nset "USERPROFILE=%LOCALAPPDATA%\\Google\\Chrome\\User Data\\user_jimaku_001"\r\nstart chrome.exe --disable-features=CalculateNativeWinOcclusion,UseEcoQoSForBackgroundProcess --user-data-dir="%USERPROFILE%" --new-window "${url}"\r\nexit /b`;
         filename = "jimakuChan_nonStop.bat";
 
       } else {
-        content = `#!/bin/sh\n"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --disable-features=CalculateNativeWinOcclusion --user-data-dir="Library/Application Support/Google/Chrome/user_jimaku_001"  --new-window "${url}"`;
+        content = `#!/bin/sh\n"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --disable-features=CalculateNativeWinOcclusion,UseEcoQoSForBackgroundProcess --user-data-dir="Library/Application Support/Google/Chrome/user_jimaku_001"  --new-window "${url}"`;
         filename = "jimakuChan_nonStop.command";
       }
   
