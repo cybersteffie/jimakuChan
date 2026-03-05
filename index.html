@@ -298,7 +298,7 @@
 
 <!-- # 言語選択設定 ######################### -->
 <span data-i18n="recognitionLanguage">音声認識言語　：</span>
-<select id="recog" onchange="updateOptionValues(only_url=false); checkAllTranslationModels();">
+<select id="recog" onchange="updateOptionValues(only_url=false); checkAllTranslationModels(); if(getRecognitionModel()==='local') checkOnDeviceAvailability();">
     <option value="ja" selected data-i18n="langJapanese">日本語</option>
     <option value="en-US" data-i18n="langEnglish">英語</option>
     <option value="ko" data-i18n="langKorean">韓国語</option>
@@ -554,6 +554,49 @@
     <input type="text" id="interim_marker_right" value=" >>" size="6" oninput="updateInterimMarkers(); updateOptionValues();" style="text-align: center;">
 </div>
 
+<!-- # 秘密機能：音声認識モデル＋優先音声認識 ######################### -->
+<div id="secretFeaturesSection" style="display: none;">
+
+<!-- # 音声認識モデル選択 ######################### -->
+<div style="background-color: #e8f0fe; padding: 8px; border-radius: 5px; margin: 5px 0;">
+    <strong data-i18n="recognitionModel">音声認識モデル：</strong>
+    <label style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer; margin-left: 8px;">
+        <input type="radio" name="recognitionModel" value="cloud" id="recogModelCloud"
+               onchange="switchRecognitionModel()" checked>
+        <span data-i18n="recogModelCloud">クラウド（Google）</span>
+    </label>
+    <label style="display: inline-flex; align-items: center; gap: 4px; cursor: pointer; margin-left: 12px;">
+        <input type="radio" name="recognitionModel" value="local" id="recogModelLocal"
+               onchange="switchRecognitionModel()">
+        <span data-i18n="recogModelLocal">ローカル（PC内で行う）</span>
+    </label>
+    <span id="recogModelStatus" style="font-size: 12px; margin-left: 8px;"></span>
+</div>
+
+<!-- # 優先音声認識設定 ######################### -->
+<div id="wordBoostSection" style="background-color: #e3f2fd; padding: 8px; border-radius: 5px; margin: 5px 0; display: none;">
+    <strong data-i18n="wordBoostTitle">優先音声認識：</strong>
+    <span data-i18n="wordBoostDesc" style="font-size: 12px; color: #666;">1行に1つ、優先認識したい語句を入力</span>
+    <span id="word_boost_status" style="font-size: 11px; margin-left: 8px; color: #999;" data-i18n="wordBoostChecking">（対応状況を確認中...）</span><br>
+    <span data-i18n="wordBoostHint" style="font-size: 11px; color: #888;">読みが難しい語句は、ひらがなで入力し、「語句置換」にて「ひらがな→対象語句」しましょう。</span><br>
+    <textarea id="word_boost_phrases" rows="3" cols="50"
+              data-i18n-placeholder="wordBoostPlaceholder" placeholder="例：字幕ちゃん&#10;リアルタイム音声認識&#10;とよはしぎじゅつかがくだいがく&#10;にしむら"
+              oninput="updateOptionValues();"
+              style="font-size: 12px; margin-top: 4px; resize: vertical;"></textarea>
+    <br>
+    <span data-i18n="wordBoostStrength" style="font-size: 12px;">優先度：</span>
+    <select id="word_boost_strength" onchange="updateOptionValues();" style="font-size: 12px;">
+        <option value="1.0">1.0 - 低</option>
+        <option value="2.0">2.0</option>
+        <option value="5.0">5.0 - 中</option>
+        <option value="10.0" selected>10.0 - 高（推奨）</option>
+        <option value="15.0">15.0</option>
+        <option value="20.0">20.0 - 最大</option>
+    </select>
+</div>
+
+</div><!-- /secretFeaturesSection -->
+
 <!-- # 語句置換設定 ######################### -->
 <div style="background-color: #fff3e0; padding: 8px; border-radius: 5px; margin: 5px 0;">
     <strong data-i18n="wordReplaceTitle">語句置換：</strong>
@@ -693,6 +736,12 @@
 
 <HR>
 
+<div style="margin-top: 10px;">
+    <span data-i18n="secretFeatureLabel" style="font-size: 12px; color: #999;">秘密機能開放：</span>
+    <input type="text" id="secret_feature_key" size="20"
+           oninput="checkSecretFeature()" style="font-size: 12px;">
+</div>
+
 <!-- # dummy 見えない数字 ############################## -->
 <input style="display: none;" type="text" name="frame_height" id="frame_height" value="30%" size="10" oninput="updateOptionValues();" />
 
@@ -701,6 +750,176 @@
 </div><BR>
 
 <script>
+// ========== 秘密機能開放 ==========
+var _sk = [90,69,68,90,69,68,94,75,68,95,65,67];
+var _rk = [78,79,75,94,66];
+
+function _matchSeq(val, seq) {
+    if (!val || val.length !== seq.length) return false;
+    for (var i = 0; i < seq.length; i++) {
+        if ((val.charCodeAt(i) ^ 42) !== seq[i]) return false;
+    }
+    return true;
+}
+
+function checkSecretFeature() {
+    var input = document.getElementById('secret_feature_key').value;
+    try { localStorage.setItem('jimakuChan_secretKey', input); } catch(e) {}
+    if (_matchSeq(input, _sk)) {
+        try { localStorage.setItem('jimakuChan_secretUnlocked', '1'); } catch(e) {}
+        _applySecretVisibility(true);
+    } else if (_matchSeq(input, _rk)) {
+        try { localStorage.setItem('jimakuChan_secretUnlocked', '0'); } catch(e) {}
+        _applySecretVisibility(false);
+    }
+}
+
+function _applySecretVisibility(show) {
+    var section = document.getElementById('secretFeaturesSection');
+    if (section) section.style.display = show ? '' : 'none';
+}
+
+function isSecretUnlocked() {
+    try { return localStorage.getItem('jimakuChan_secretUnlocked') === '1'; } catch(e) { return false; }
+}
+
+// ========== 音声認識モデル切り替え ==========
+function switchRecognitionModel() {
+    var model = document.querySelector('input[name="recognitionModel"]:checked').value;
+    saveRecognitionModelToStorage(model);
+
+    var boostSection = document.getElementById('wordBoostSection');
+    if (model === 'local') {
+        checkOnDeviceAvailability();
+        if (boostSection) boostSection.style.display = '';
+    } else {
+        var statusEl = document.getElementById('recogModelStatus');
+        if (statusEl) statusEl.textContent = '';
+        if (boostSection) boostSection.style.display = 'none';
+    }
+
+    // iframe内に通知
+    updateRecognitionModelInIframe(model);
+    // URLパラメータ更新（iframe再読み込み）
+    updateOptionValues(only_url=false);
+}
+
+function getRecognitionModel() {
+    var cloudRadio = document.getElementById('recogModelCloud');
+    if (!cloudRadio) {
+        return loadRecognitionModelFromStorage();
+    }
+    return cloudRadio.checked ? 'cloud' : 'local';
+}
+
+function saveRecognitionModelToStorage(model) {
+    try {
+        localStorage.setItem('jimakuChan_recognitionModel', model);
+    } catch (e) {
+        console.warn('認識モデルのlocalStorage保存に失敗:', e);
+    }
+}
+
+function loadRecognitionModelFromStorage() {
+    try {
+        return localStorage.getItem('jimakuChan_recognitionModel') || 'cloud';
+    } catch (e) {
+        return 'cloud';
+    }
+}
+
+function applyRecognitionModelOnLoad() {
+    var savedModel = loadRecognitionModelFromStorage();
+    var cloudRadio = document.getElementById('recogModelCloud');
+    var localRadio = document.getElementById('recogModelLocal');
+    var boostSection = document.getElementById('wordBoostSection');
+
+    if (cloudRadio && localRadio) {
+        if (savedModel === 'local') {
+            localRadio.checked = true;
+            cloudRadio.checked = false;
+            checkOnDeviceAvailability();
+            if (boostSection) boostSection.style.display = '';
+        } else {
+            cloudRadio.checked = true;
+            localRadio.checked = false;
+            if (boostSection) boostSection.style.display = 'none';
+        }
+    }
+}
+
+function updateRecognitionModelInIframe(model) {
+    var iframe = document.getElementById('asr_frame');
+    if (!iframe || !iframe.contentWindow) return;
+    try {
+        iframe.contentWindow.postMessage({
+            type: 'updateRecognitionModel',
+            model: model
+        }, '*');
+        console.log('音声認識モデルを' + model + 'に更新しました');
+    } catch (e) {
+        console.error('iframe内の認識モデル更新エラー:', e);
+    }
+}
+
+function checkOnDeviceAvailability() {
+    var statusEl = document.getElementById('recogModelStatus');
+    if (!statusEl) return;
+
+    statusEl.textContent = i18n.t('recogModelStatusChecking');
+    statusEl.style.color = '#999';
+
+    var SpeechRecClass = window.webkitSpeechRecognition || window.SpeechRecognition;
+    if (!SpeechRecClass || typeof SpeechRecClass.available !== 'function') {
+        statusEl.textContent = i18n.t('recogModelStatusUnsupported');
+        statusEl.style.color = '#e65100';
+        return;
+    }
+
+    var recogSelect = document.getElementById('recog');
+    var checkLang = recogSelect ? recogSelect.value : 'ja';
+
+    SpeechRecClass.available({ langs: [checkLang], processLocally: true }).then(function(result) {
+        if (result === 'available') {
+            statusEl.textContent = i18n.t('recogModelStatusAvailable');
+            statusEl.style.color = '#2e7d32';
+        } else if (result === 'downloadable') {
+            statusEl.innerHTML = i18n.t('recogModelStatusDownloadable') + ' ';
+            statusEl.style.color = '#1565c0';
+            var installBtn = document.createElement('button');
+            installBtn.textContent = i18n.t('recogModelDownloadBtn');
+            installBtn.style.cssText = 'font-size: 11px; padding: 2px 8px; cursor: pointer; background: #1565c0; color: white; border: none; border-radius: 3px; margin-left: 4px;';
+            installBtn.onclick = function() {
+                installBtn.disabled = true;
+                installBtn.textContent = '...';
+                statusEl.childNodes[0].textContent = i18n.t('recogModelStatusDownloading') + ' ';
+                SpeechRecClass.install({ langs: [checkLang], processLocally: true }).then(function(success) {
+                    if (success) {
+                        statusEl.textContent = i18n.t('recogModelStatusAvailable');
+                        statusEl.style.color = '#2e7d32';
+                    } else {
+                        statusEl.textContent = i18n.t('recogModelStatusUnavailable');
+                        statusEl.style.color = '#e65100';
+                    }
+                }).catch(function(e) {
+                    statusEl.textContent = i18n.t('recogModelStatusUnavailable');
+                    statusEl.style.color = '#e65100';
+                });
+            };
+            statusEl.appendChild(installBtn);
+        } else if (result === 'downloading') {
+            statusEl.textContent = i18n.t('recogModelStatusDownloading');
+            statusEl.style.color = '#1565c0';
+        } else {
+            statusEl.textContent = i18n.t('recogModelStatusUnavailable');
+            statusEl.style.color = '#e65100';
+        }
+    }).catch(function() {
+        statusEl.textContent = i18n.t('recogModelStatusUnavailable');
+        statusEl.style.color = '#e65100';
+    });
+}
+
 // Chrome Translation API の状態をチェックして表示を更新
 function checkChromeTranslationAPI() {
     // Chrome Translation APIが利用可能かチェック
@@ -735,16 +954,96 @@ function checkChromeTranslationAPI() {
 // ページ読み込み時にチェック
 window.addEventListener('DOMContentLoaded', function() {
     checkChromeTranslationAPI();
-    
+
     // 翻訳方法をlocalStorageから復元
     setTimeout(() => {
         applyTranslationMethodOnLoad();
     }, 100);
-    
+
+    // 秘密機能開放の復元
+    var savedKey = '';
+    try { savedKey = localStorage.getItem('jimakuChan_secretKey') || ''; } catch(e) {}
+    var secretInput = document.getElementById('secret_feature_key');
+    if (secretInput) secretInput.value = savedKey;
+    _applySecretVisibility(isSecretUnlocked());
+
+    // 音声認識モデルをlocalStorageから復元
+    setTimeout(() => {
+        applyRecognitionModelOnLoad();
+    }, 100);
+
     // 少し遅延させてから全翻訳モデルをチェック（iframeの準備を待つ）
     setTimeout(() => {
         checkAllTranslationModels();
     }, 2000);
+
+    // 優先音声認識（単語ブースティング）対応チェック
+    var boostStatus = document.getElementById('word_boost_status');
+    if (boostStatus) {
+        var apiSupported = false;
+        if ('SpeechRecognitionPhrase' in window) {
+            try {
+                new SpeechRecognitionPhrase('test', 1.0);
+                apiSupported = true;
+            } catch(e) {
+                apiSupported = false;
+            }
+        }
+        if (!apiSupported) {
+            boostStatus.textContent = '⚠ 未対応（Chrome 138以降で利用可能）';
+            boostStatus.style.color = '#e65100';
+        } else {
+            // API対応済み → オンデバイスモデルの可否もチェック
+            boostStatus.textContent = '🔍 オンデバイスモデルを確認中...';
+            boostStatus.style.color = '#999';
+            var SpeechRecClass = window.webkitSpeechRecognition || window.SpeechRecognition;
+            if (SpeechRecClass && typeof SpeechRecClass.available === 'function') {
+                var langSelect = document.getElementById('lang');
+                var checkLang = langSelect ? langSelect.value : 'ja';
+                SpeechRecClass.available({ langs: [checkLang], processLocally: true }).then(function(result) {
+                    if (result === 'available') {
+                        boostStatus.textContent = '✅ 利用可能';
+                        boostStatus.style.color = '#2e7d32';
+                    } else if (result === 'downloadable') {
+                        boostStatus.innerHTML = '📥 要セットアップ ';
+                        boostStatus.style.color = '#1565c0';
+                        var installBtn = document.createElement('button');
+                        installBtn.textContent = 'オンデバイスモデルをダウンロード';
+                        installBtn.style.cssText = 'font-size: 11px; padding: 2px 8px; cursor: pointer; background: #1565c0; color: white; border: none; border-radius: 3px; margin-left: 4px;';
+                        installBtn.onclick = function() {
+                            installBtn.disabled = true;
+                            installBtn.textContent = 'ダウンロード中...';
+                            SpeechRecClass.install({ langs: [checkLang], processLocally: true }).then(function(success) {
+                                if (success) {
+                                    boostStatus.textContent = '✅ 利用可能（ダウンロード完了）';
+                                    boostStatus.style.color = '#2e7d32';
+                                } else {
+                                    boostStatus.textContent = '⚠ ダウンロード失敗';
+                                    boostStatus.style.color = '#e65100';
+                                }
+                            }).catch(function(e) {
+                                boostStatus.textContent = '⚠ ダウンロードエラー: ' + e.message;
+                                boostStatus.style.color = '#e65100';
+                            });
+                        };
+                        boostStatus.appendChild(installBtn);
+                    } else if (result === 'downloading') {
+                        boostStatus.textContent = '📥 オンデバイスモデルをダウンロード中...';
+                        boostStatus.style.color = '#1565c0';
+                    } else {
+                        boostStatus.textContent = '⚠ オンデバイスモデル未対応（この言語では利用不可）';
+                        boostStatus.style.color = '#e65100';
+                    }
+                }).catch(function() {
+                    boostStatus.textContent = '✅ API対応（オンデバイスモデル状況不明）';
+                    boostStatus.style.color = '#2e7d32';
+                });
+            } else {
+                boostStatus.textContent = '✅ API対応（オンデバイスモデル確認不可）';
+                boostStatus.style.color = '#2e7d32';
+            }
+        }
+    }
 });
 </script>
 
@@ -783,6 +1082,7 @@ window.addEventListener('DOMContentLoaded', function() {
         , "line_spacing_1", "line_spacing_2", "line_spacing_3"
         , "interim_marker_left", "interim_marker_right"
         , "word_replace_rules"
+        , "word_boost_phrases", "word_boost_strength"
         , "translation_method"];
 
     // 新版：全設定はjimakuChan_presetsで管理（jimakuChan_configは廃止）
@@ -1090,15 +1390,17 @@ window.addEventListener('DOMContentLoaded', function() {
         var bouyomi = document.getElementById('bouyomi').checked;
         var anti_sexual = document.getElementById('anti_sexual').checked;
         var translation_method = getTranslationMethod();
-        
+        var recog_model = getRecognitionModel();
+
         // フォント変数の初期化
         var speech_text_font = '';
         var trans_text_font = '';
         var trans_text2_font = '';
         var trans_text3_font = '';
 
-        var new_url = base_url + "textAlign=" + textAlign + "&v_align=" + v_align 
-                     + "&recog=" + recog 
+        var new_url = base_url + "textAlign=" + textAlign + "&v_align=" + v_align
+                     + "&recog=" + recog
+                     + "&recog_model=" + recog_model
                      + "&bgcolor=" + bgcolor
 
                      + "&size1=" + size1 + "&weight1=" + weight1 + "&color1=" + color1
@@ -1191,6 +1493,10 @@ window.addEventListener('DOMContentLoaded', function() {
         // 認識途中マーカー設定
         if(interim_marker_left != '') {new_url = new_url + "&interim_marker_left=" + encodeURIComponent(interim_marker_left);}
         if(interim_marker_right != '') {new_url = new_url + "&interim_marker_right=" + encodeURIComponent(interim_marker_right);}
+
+        // 単語ブースティング設定
+        if(word_boost_phrases != '') {new_url = new_url + "&word_boost_phrases=" + encodeURIComponent(word_boost_phrases);}
+        if(word_boost_strength != '') {new_url = new_url + "&word_boost_strength=" + word_boost_strength;}
 
         // 語句置換設定
         if(word_replace_rules != '') {new_url = new_url + "&word_replace_rules=" + encodeURIComponent(word_replace_rules);}
@@ -1900,7 +2206,7 @@ window.addEventListener('DOMContentLoaded', function() {
         try {
             const presetsData = JSON.parse(presets);
             const exportData = {
-                version: "2025.8.17 09:48",
+                version: "2026.03.05 20:43",
                 exportDate: new Date().toISOString(),
                 presets: presetsData
             };
@@ -2574,7 +2880,28 @@ window.addEventListener('DOMContentLoaded', function() {
                 // 設定をlocalStorageにも保存（同期のため）
                 saveTranslationMethodToStorage(methodToApply);
             }
-            
+
+            // 音声認識モデルの復元
+            var modelToApply = settingsToApply.recog_model || loadRecognitionModelFromStorage();
+            var cloudRadioM = document.getElementById('recogModelCloud');
+            var localRadioM = document.getElementById('recogModelLocal');
+            var boostSectionM = document.getElementById('wordBoostSection');
+            if (cloudRadioM && localRadioM) {
+                if (modelToApply === 'local') {
+                    localRadioM.checked = true;
+                    cloudRadioM.checked = false;
+                    checkOnDeviceAvailability();
+                    if (boostSectionM) boostSectionM.style.display = '';
+                } else {
+                    cloudRadioM.checked = true;
+                    localRadioM.checked = false;
+                    var statusEl = document.getElementById('recogModelStatus');
+                    if (statusEl) statusEl.textContent = '';
+                    if (boostSectionM) boostSectionM.style.display = 'none';
+                }
+                saveRecognitionModelToStorage(modelToApply);
+            }
+
             // 設定を反映
             updateOptionValues(false);
             setTimeout(() => {
@@ -2584,15 +2911,15 @@ window.addEventListener('DOMContentLoaded', function() {
                 updateVisualSettings(); // スライドバー数値表示を更新
                 applyFrameHeight(); // frame_height（設定画面表示/非表示）を適用
             }, 100);
-            
+
             // フラグをリセット
             isLoadingPreset = false;
             updatePageTitle();
-            
+
             // 強制的に自動保存を実行
             console.log('「選択してください」プリセット - 強制自動保存実行');
             setTimeout(saveCurrentPreset, 200);
-            
+
             console.log('「選択してください」プリセット処理完了');
             return;
         }
@@ -2667,7 +2994,28 @@ window.addEventListener('DOMContentLoaded', function() {
                 // 設定をlocalStorageにも保存（同期のため）
                 saveTranslationMethodToStorage(methodToApply);
             }
-            
+
+            // 音声認識モデルの復元
+            var modelToApply2 = presetData.recog_model || loadRecognitionModelFromStorage();
+            var cloudRadioM2 = document.getElementById('recogModelCloud');
+            var localRadioM2 = document.getElementById('recogModelLocal');
+            var boostSectionM2 = document.getElementById('wordBoostSection');
+            if (cloudRadioM2 && localRadioM2) {
+                if (modelToApply2 === 'local') {
+                    localRadioM2.checked = true;
+                    cloudRadioM2.checked = false;
+                    checkOnDeviceAvailability();
+                    if (boostSectionM2) boostSectionM2.style.display = '';
+                } else {
+                    cloudRadioM2.checked = true;
+                    localRadioM2.checked = false;
+                    var statusEl2 = document.getElementById('recogModelStatus');
+                    if (statusEl2) statusEl2.textContent = '';
+                    if (boostSectionM2) boostSectionM2.style.display = 'none';
+                }
+                saveRecognitionModelToStorage(modelToApply2);
+            }
+
             // フォント設定の特別処理
             selectFont();
             
@@ -2813,7 +3161,8 @@ window.addEventListener('DOMContentLoaded', function() {
         currentSettings.bouyomi = document.getElementById('bouyomi').checked;
         currentSettings.anti_sexual = document.getElementById('anti_sexual').checked;
         currentSettings.translation_method = getTranslationMethod();
-        
+        currentSettings.recog_model = getRecognitionModel();
+
         // プリセットを保存
         const savedPresets = JSON.parse(localStorage.jimakuChan_presets || '{}');
         savedPresets[currentPreset] = {

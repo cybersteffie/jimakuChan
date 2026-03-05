@@ -204,7 +204,8 @@
         var arg_useCustomDictionary = getParam('useCustomDictionary');
         var arg_customDictionary = getParam('customDictionary');
         var arg_recog = getParam('recog');
-        console.log('音声認識言語パラメータ:', arg_recog);
+        var arg_recog_model = getParam('recog_model') || 'cloud'; // 'cloud' or 'local'
+        console.log('音声認識言語パラメータ:', arg_recog, '認識モデル:', arg_recog_model);
         var arg_trans = getParam('trans');
         var arg_trans2 = getParam('trans2');
         var arg_trans3 = getParam('trans3');
@@ -235,6 +236,26 @@
         var bouyomi = getParam('bouyomi');
         var anti_sexual = getParam('anti_sexual');
         
+        // 単語ブースティング設定の読み込み
+        var arg_word_boost_phrases = getParam('word_boost_phrases');
+        var arg_word_boost_strength = getParam('word_boost_strength');
+        var wordBoostPhrases = [];
+        if (arg_word_boost_phrases) {
+            try {
+                const phrasesText = decodeURIComponent(arg_word_boost_phrases);
+                const boostValue = parseFloat(arg_word_boost_strength) || 5.0;
+                phrasesText.split('\n').forEach(line => {
+                    line = line.trim();
+                    if (line !== '') {
+                        wordBoostPhrases.push({ phrase: line, boost: boostValue });
+                    }
+                });
+                console.log('単語ブースティングフレーズを読み込みました:', wordBoostPhrases.length + '件', '優先度:', boostValue);
+            } catch (error) {
+                console.error('単語ブースティングフレーズの解析に失敗:', error);
+            }
+        }
+
         // 語句置換ルールの読み込み
         var arg_word_replace_rules = getParam('word_replace_rules');
         var wordReplaceRules = [];
@@ -595,17 +616,111 @@
         var recognitionState = 'stopped';
         var recognitionRestartInProgress = false;
 
+        // オンデバイス認識が利用可能かどうかのフラグ
+        var onDeviceAvailable = false;
+
         // 各インスタンスの基本設定を行う関数
         function setupRecognitionInstance(rec, index) {
             rec.lang = 'ja';
             rec.interimResults = true;
             // continuous = false のまま（文末検出を有効にする）
+
+            // ユーザーが明示的にローカルモデルを選択した場合
+            if (arg_recog_model === 'local' && onDeviceAvailable) {
+                try {
+                    rec.processLocally = true;
+                    console.log('[' + index + '] ユーザー設定によりオンデバイス認識を有効化');
+                } catch (e) {
+                    console.warn('[' + index + '] processLocally設定に失敗:', e);
+                }
+            }
+
+            // 優先音声認識（Contextual Biasing）の設定
+            // Chrome では phrases はオンデバイス認識（processLocally = true）でのみ動作する
+            if (wordBoostPhrases.length > 0 && onDeviceAvailable && 'SpeechRecognitionPhrase' in window) {
+                try {
+                    // 【最重要】オンデバイス認識を強制（lang設定より前に設定）
+                    rec.processLocally = true;
+
+                    var phraseObjects = wordBoostPhrases.map(item =>
+                        new SpeechRecognitionPhrase(item.phrase, item.boost)
+                    );
+
+                    // パターンA: phrases プロパティに直接代入（最新仕様）
+                    try {
+                        rec.phrases = phraseObjects;
+                        console.log('[' + index + '] 優先音声認識を設定（直接代入）:', wordBoostPhrases.length + '件');
+                    } catch (assignError) {
+                        // パターンB: phrases が ObservableArray の場合（pushを使用）
+                        if (rec.phrases && typeof rec.phrases.push === 'function') {
+                            // 既存のphrasesをクリア
+                            while (rec.phrases.length > 0) { rec.phrases.pop(); }
+                            phraseObjects.forEach(p => rec.phrases.push(p));
+                            console.log('[' + index + '] 優先音声認識を設定（push方式）:', wordBoostPhrases.length + '件');
+                        } else {
+                            throw assignError;
+                        }
+                    }
+
+                    // デバッグ: 設定後のphrases内容を確認
+                    console.log('[' + index + '] processLocally:', rec.processLocally);
+                    console.log('[' + index + '] phrases数:', rec.phrases ? rec.phrases.length : 'undefined');
+                    if (rec.phrases && rec.phrases.length > 0) {
+                        for (var pi = 0; pi < rec.phrases.length; pi++) {
+                            console.log('[' + index + ']   phrase[' + pi + ']:', rec.phrases[pi].phrase, 'boost:', rec.phrases[pi].boost);
+                        }
+                    }
+                } catch (error) {
+                    console.error('[' + index + '] 優先音声認識の設定に失敗:', error);
+                }
+            } else if (wordBoostPhrases.length > 0 && !onDeviceAvailable) {
+                console.warn('[' + index + '] 日本語オンデバイス認識が利用不可のため、優先音声認識は無効です（クラウド認識を使用）');
+            } else if (wordBoostPhrases.length > 0) {
+                console.warn('SpeechRecognitionPhraseが未対応のブラウザです。優先音声認識は無効です。');
+            }
         }
 
-        // 両方のインスタンスを初期化
-        recognitions.forEach((rec, index) => {
-            setupRecognitionInstance(rec, index);
-        });
+        // オンデバイス認識の利用可否をチェックし、インスタンスを初期化する
+        async function initRecognitionInstances() {
+            // ローカルモデルが選択されている場合、または優先音声認識が設定されている場合、オンデバイス認識の可否を確認
+            var needOnDeviceCheck = (arg_recog_model === 'local') || (wordBoostPhrases.length > 0 && 'SpeechRecognitionPhrase' in window);
+            if (needOnDeviceCheck) {
+                try {
+                    if (typeof webkitSpeechRecognition.available === 'function') {
+                        var lang = getParam('recog') || 'ja';
+                        var availability = await webkitSpeechRecognition.available({ langs: [lang], processLocally: true });
+                        console.log('オンデバイス認識の利用可否:', availability);
+
+                        if (availability === 'available') {
+                            onDeviceAvailable = true;
+                            console.log('✅ オンデバイス認識が利用可能です。優先音声認識を有効にします。');
+                        } else if (availability === 'downloadable') {
+                            console.warn('⚠️ オンデバイスモデルが未ダウンロードです。設定画面の「オンデバイスモデルをダウンロード」ボタンを押してください。クラウド認識を使用します。');
+                        } else if (availability === 'downloading') {
+                            console.log('📥 オンデバイスモデルをダウンロード中です。完了後に再読み込みしてください。クラウド認識を使用します。');
+                        } else {
+                            console.warn('⚠️ オンデバイス認識は利用不可です（状態: ' + availability + '）。クラウド認識を使用します。');
+                        }
+                    } else {
+                        // available() が存在しない場合、processLocally を試みる（フォールバック）
+                        console.log('SpeechRecognition.available() 未対応。オンデバイス認識を試みます。');
+                        onDeviceAvailable = true; // 試行してエラーハンドラでフォールバック
+                    }
+                } catch (error) {
+                    console.warn('オンデバイス認識の可否チェックに失敗:', error);
+                    // チェック失敗時も試行してエラーハンドラでフォールバック
+                    onDeviceAvailable = true;
+                }
+            }
+
+            // 両方のインスタンスを初期化
+            recognitions.forEach((rec, index) => {
+                setupRecognitionInstance(rec, index);
+            });
+        }
+
+        // 初期化実行（Promiseを保持して認識開始前に完了を保証）
+        var initRecognitionPromise = initRecognitionInstances();
 
         // 現在アクティブな認識インスタンスを取得
         function getActiveRecognition() {
@@ -760,6 +875,10 @@
             if (event.data && event.data.type === 'updateTranslationMethod') {
                 selectedTranslationMethod = event.data.method;
                 console.log('翻訳方法を切り替え:', selectedTranslationMethod);
+            }
+            if (event.data && event.data.type === 'updateRecognitionModel') {
+                arg_recog_model = event.data.model;
+                console.log('音声認識モデルを切り替え:', arg_recog_model);
             }
         })
         
@@ -1212,6 +1331,28 @@
                 // エラーの種類によって処理を分ける
                 if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
                     console.log('マイクのアクセス許可が必要です');
+                    return;
+                }
+
+                // phrases-not-supported または language-not-supported エラー時は
+                // phrasesとprocessLocallyを除去してクラウド認識にフォールバック
+                if (event.error === 'phrases-not-supported' || event.error === 'language-not-supported') {
+                    console.warn('[' + index + '] ' + event.error + ' - phrasesとprocessLocallyを除去してクラウド認識で再起動します');
+                    // ローカルモデル設定もクラウドにフォールバック
+                    arg_recog_model = 'cloud';
+                    // 両方のインスタンスからphrasesとprocessLocallyを除去
+                    recognitions.forEach((r) => {
+                        try { r.processLocally = false; } catch(e) {}
+                        try { r.phrases = []; } catch(e) {}
+                        try { delete r.phrases; } catch(e) {}
+                    });
+                    // フラグを立てて二度と設定しないようにする
+                    wordBoostPhrases = [];
+                    onDeviceAvailable = false;
+                    // アクティブインスタンスのみ再起動
+                    if (index === activeRecognitionIndex) {
+                        safeRestartRecognition('クラウド認識へフォールバック');
+                    }
                     return;
                 }
 
@@ -1787,26 +1928,18 @@
         });
 
 
-        // 音声デバイス初期化後に音声認識を開始（デュアルインスタンス対応）
-        initializeAudioDevice().then(() => {
+        // 音声デバイス初期化＋優先音声認識の可否チェック完了後に音声認識を開始
+        // initRecognitionPromise は必ず待ち、initializeAudioDevice は失敗しても続行
+        initRecognitionPromise.then(() => {
+            return initializeAudioDevice().catch(() => {
+                console.log('音声デバイス初期化失敗 - デフォルトデバイスで続行');
+            });
+        }).then(() => {
             // 最初のインスタンス（インデックス0）を開始
             recognitionStates[0] = 'starting';
             recognitions[0].start();
             recognitionState = 'starting';  // 後方互換性
             console.log("[0] recog start: cnt:" + String(my_count));
-
-            // 初期ステータス設定
-            if (gas_key != null && gas_key !== '') {
-                updateTranslationStatus('待機中', '#666');
-            } else {
-                updateTranslationStatus('API KEYなし', '#999');
-            }
-        }).catch(() => {
-            // エラーが発生してもデフォルトデバイスで開始
-            recognitionStates[0] = 'starting';
-            recognitions[0].start();
-            recognitionState = 'starting';  // 後方互換性
-            console.log("[0] recog start (default device): cnt:" + String(my_count));
 
             // 初期ステータス設定
             if (gas_key != null && gas_key !== '') {
@@ -1872,7 +2005,7 @@
 <script type="text/javascript">
 
 // バージョン情報の表示 ---------------------------------
-const SoftwareVersion = "2026.02.16 01:35";
+const SoftwareVersion = "2026.03.05 20:43";
 
 // 言語設定を取得（localStorageから、なければ日本語）
 const currentLang = localStorage.getItem('jimakuChan_language') || 'ja';

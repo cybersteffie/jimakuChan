@@ -61,6 +61,18 @@ const i18n = {
             // Background color
             backgroundColor: "背景色：",
 
+            // Recognition model
+            recognitionModel: "音声認識モデル：",
+            recogModelCloud: "クラウド（Google）",
+            recogModelLocal: "ローカル（PC内で行う）",
+            recogModelStatusAvailable: "✅ 利用可能",
+            recogModelStatusDownloadable: "📥 要ダウンロード",
+            recogModelStatusDownloading: "📥 ダウンロード中...",
+            recogModelStatusUnavailable: "⚠ 利用不可",
+            recogModelStatusChecking: "🔍 確認中...",
+            recogModelStatusUnsupported: "⚠ 未対応（Chrome 138以降で利用可能）",
+            recogModelDownloadBtn: "モデルをダウンロード",
+
             // Language settings
             recognitionLanguage: "音声認識言語　：",
             font: "フォント　：",
@@ -100,6 +112,14 @@ const i18n = {
             interimTextMarker: "認識途中文字：",
             interimTextLeft: "左側",
             interimTextRight: "右側",
+
+            // Word boosting
+            wordBoostTitle: "優先音声認識：",
+            wordBoostDesc: "1行に1つ、優先認識したい語句を入力",
+            wordBoostHint: "読みが難しい語句は、ひらがなで入力し、「語句置換」にて「ひらがな→対象語句」しましょう。",
+            wordBoostPlaceholder: "例：字幕ちゃん\nリアルタイム音声認識\nとよはしぎじゅつかがくだいがく\nにしむら",
+            wordBoostStrength: "優先度：",
+            wordBoostChecking: "（対応状況を確認中...）",
 
             // Word replacement
             wordReplaceTitle: "語句置換：",
@@ -163,6 +183,9 @@ const i18n = {
             forMac: "Macの人：",
             generateWinBat: "Windows用 起動 .batファイル生成",
             generateMacCommand: "Mac用 起動 .commandファイル生成",
+
+            // Secret feature
+            secretFeatureLabel: "秘密機能開放：",
 
             // Font selector option
             pcFontOption: "[PC内フォント]",
@@ -230,6 +253,18 @@ const i18n = {
             // Background color
             backgroundColor: "Background Color:",
 
+            // Recognition model
+            recognitionModel: "Recognition Model:",
+            recogModelCloud: "Cloud (Google)",
+            recogModelLocal: "Local (On your PC)",
+            recogModelStatusAvailable: "✅ Available",
+            recogModelStatusDownloadable: "📥 Download required",
+            recogModelStatusDownloading: "📥 Downloading...",
+            recogModelStatusUnavailable: "⚠ Unavailable",
+            recogModelStatusChecking: "🔍 Checking...",
+            recogModelStatusUnsupported: "⚠ Unsupported (requires Chrome 138+)",
+            recogModelDownloadBtn: "Download Model",
+
             // Language settings
             recognitionLanguage: "Recognition Language:",
             font: "Font:",
@@ -269,6 +304,14 @@ const i18n = {
             interimTextMarker: "Interim Text:",
             interimTextLeft: "Left",
             interimTextRight: "Right",
+
+            // Word boosting
+            wordBoostTitle: "Priority Recognition:",
+            wordBoostDesc: "One phrase per line to prioritize recognition",
+            wordBoostHint: "For hard-to-read phrases, enter in hiragana and use \"Word Replace\" to convert.",
+            wordBoostPlaceholder: "e.g.: Subtitle Chan\nreal-time speech recognition\ntoyohashi\nnishimura",
+            wordBoostStrength: "Priority:",
+            wordBoostChecking: "(Checking compatibility...)",
 
             // Word replacement
             wordReplaceTitle: "Word Replace:",
@@ -332,6 +375,9 @@ const i18n = {
             forMac: "For Mac:",
             generateWinBat: "Generate Windows .bat file",
             generateMacCommand: "Generate Mac .command file",
+
+            // Secret feature
+            secretFeatureLabel: "Secret Features:",
 
             // Font selector option
             pcFontOption: "[System Font]",
