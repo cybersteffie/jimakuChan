@@ -3,8 +3,8 @@
 .AppleDouble
 .LSOverride
 
-# Icon must end with two \r
-Icon
+# macOS Icon files
+Icon*
 
 # Thumbnails
 ._*
@@ -36,9 +36,6 @@ chrome_test/
 
 # ドキュメント（開発用）
 chrome_auto_translate.md
-
-# Claude AI設定
-.claude/
 
 # Python cache
 __pycache__/

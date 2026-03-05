@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+- セッション開始時に共通ルールである、AGENTS.mdを必ず読み込むこと。
+- 読み込んだことを最初に報告すること
+- 以下は Claude Code固有の差分のみ記載する
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
