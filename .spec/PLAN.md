@@ -1,4 +1,6 @@
 # PLAN - やりたいこと
 
-<!-- ここに思ったことを自由に書いてください。箇条書きでも口語でもOK -->
-<!-- Claude がこの内容を読んでヒアリングし、SPEC.md を作成します -->
+- Oxanium font for English subtitles, Noto Sans JP for Japanese translation
+- Super minimal elegant styling - subtle shadow, no thick stroke outlines
+- English recognition → Japanese translation setup
+- Clean stream overlay look

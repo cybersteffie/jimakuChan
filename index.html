@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css?family=Reggae+One" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Sawarabi+Gothic" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/earlyaccess/nicomoji.css" rel="stylesheet">
 
     <link href="./font.css" rel="stylesheet">
@@ -215,16 +216,16 @@
         <input id="st_color1" type="color" value="#000000" oninput="changeTextColor('bg',this.value,1); updateOptionValues(only_url=true)" />
     </td>
     <td style="text-align: center;">
-        <input id="size1" type="range" value="25" min="0" max="40" step="0.1" oninput="document.getElementById('asr_frame').contentWindow.document.getElementById('speech_text').style.fontSize = this.value + 'pt'; document.getElementById('text_size_view1').innerHTML=this.value; updateOptionValues(only_url=true)" />
-        <span id="text_size_view1">25</span>px
+        <input id="size1" type="range" value="30" min="0" max="40" step="0.1" oninput="document.getElementById('asr_frame').contentWindow.document.getElementById('speech_text').style.fontSize = this.value + 'pt'; document.getElementById('text_size_view1').innerHTML=this.value; updateOptionValues(only_url=true)" />
+        <span id="text_size_view1">30</span>px
     </td>
     <td style="text-align: center;">
         <input id="weight1" type="range" value="900" min="100" max="900" step="100" oninput="document.getElementById('asr_frame').contentWindow.document.getElementById('speech_text').style.fontWeight = this.value; document.getElementById('text_weight_view1').innerHTML=this.value; updateOptionValues(only_url=true)" />
         <span id="text_weight_view1">900</span>
     </td>
     <td style="text-align: center;">
-        <input id="st_width1" type="range" value="6" min="0" max="20" step="0.1" oninput="setTextBorder(this.value,1); document.getElementById('text_st_size_view1').innerHTML=this.value; updateOptionValues(only_url=true)" />
-        <span id="text_st_size_view1">6</span>pt
+        <input id="st_width1" type="range" value="0" min="0" max="20" step="0.1" oninput="setTextBorder(this.value,1); document.getElementById('text_st_size_view1').innerHTML=this.value; updateOptionValues(only_url=true)" />
+        <span id="text_st_size_view1">0</span>pt
     </td>
 </tr>
 <tr>
@@ -236,16 +237,16 @@
         <input id="st_color2" type="color" value="#000000" oninput="changeTextColor('bg',this.value,2); updateOptionValues(only_url=true)" />
     </td>
     <td style="text-align: center;">
-        <input id="size2" type="range" value="25" min="0" max="40" step="0.1" oninput="document.getElementById('asr_frame').contentWindow.document.getElementById('trans_text').style.fontSize = this.value + 'pt'; document.getElementById('text_size_view2').innerHTML=this.value; updateOptionValues(only_url=true)" />
-        <span id="text_size_view2">25</span>px
+        <input id="size2" type="range" value="24" min="0" max="40" step="0.1" oninput="document.getElementById('asr_frame').contentWindow.document.getElementById('trans_text').style.fontSize = this.value + 'pt'; document.getElementById('text_size_view2').innerHTML=this.value; updateOptionValues(only_url=true)" />
+        <span id="text_size_view2">24</span>px
     </td>
     <td style="text-align: center;">
         <input id="weight2" type="range" value="900" min="100" max="900" step="100" oninput="document.getElementById('asr_frame').contentWindow.document.getElementById('trans_text').style.fontWeight = this.value; document.getElementById('text_weight_view2').innerHTML=this.value; updateOptionValues(only_url=true)" />
         <span id="text_weight_view2">900</span>
     </td>
     <td style="text-align: center;">
-        <input id="st_width2" type="range" value="6" min="0" max="20" step="0.1" oninput="setTextBorder(this.value,2); document.getElementById('text_st_size_view2').innerHTML=this.value; updateOptionValues(only_url=true)" />
-        <span id="text_st_size_view2">6</span>pt
+        <input id="st_width2" type="range" value="0" min="0" max="20" step="0.1" oninput="setTextBorder(this.value,2); document.getElementById('text_st_size_view2').innerHTML=this.value; updateOptionValues(only_url=true)" />
+        <span id="text_st_size_view2">0</span>pt
     </td>
 </tr>
 <tr>
@@ -265,8 +266,8 @@
         <span id="text_weight_view3">900</span>
     </td>
     <td style="text-align: center;">
-        <input id="st_width3" type="range" value="6" min="0" max="20" step="0.1" oninput="setTextBorder(this.value,3); document.getElementById('text_st_size_view3').innerHTML=this.value; updateOptionValues(only_url=true)" />
-        <span id="text_st_size_view3">6</span>pt
+        <input id="st_width3" type="range" value="0" min="0" max="20" step="0.1" oninput="setTextBorder(this.value,3); document.getElementById('text_st_size_view3').innerHTML=this.value; updateOptionValues(only_url=true)" />
+        <span id="text_st_size_view3">0</span>pt
     </td>
 </tr>
 <tr>
@@ -286,8 +287,8 @@
         <span id="text_weight_view4">900</span>
     </td>
     <td style="text-align: center;">
-        <input id="st_width4" type="range" value="6" min="0" max="20" step="0.1" oninput="setTextBorder(this.value,4); document.getElementById('text_st_size_view4').innerHTML=this.value; updateOptionValues(only_url=true)" />
-        <span id="text_st_size_view4">6</span>pt
+        <input id="st_width4" type="range" value="0" min="0" max="20" step="0.1" oninput="setTextBorder(this.value,4); document.getElementById('text_st_size_view4').innerHTML=this.value; updateOptionValues(only_url=true)" />
+        <span id="text_st_size_view4">0</span>pt
     </td>
 </tr>
 </table>
@@ -299,8 +300,8 @@
 <!-- # 言語選択設定 ######################### -->
 <span data-i18n="recognitionLanguage">音声認識言語　：</span>
 <select id="recog" onchange="updateOptionValues(only_url=false); checkAllTranslationModels(); if(getRecognitionModel()==='local') checkOnDeviceAvailability();">
-    <option value="ja" selected data-i18n="langJapanese">日本語</option>
-    <option value="en-US" data-i18n="langEnglish">英語</option>
+    <option value="ja" data-i18n="langJapanese">日本語</option>
+    <option value="en-US" selected data-i18n="langEnglish">英語</option>
     <option value="ko" data-i18n="langKorean">韓国語</option>
     <option value="zh-CN" data-i18n="langChinese">中国語</option>
     <option value="zh-TW" data-i18n="langTaiwanese">台湾語</option>
@@ -327,7 +328,8 @@
 <select name="speech_text_font_selector" id="speech_text_font_selector" onchange="applySelectedFont(this, 'speech_text'); selectFont(); updateOptionValues();">
     <option value="direct" data-i18n="pcFontOption">[PC内フォント]</option>
     <option value="M PLUS\\ 1p">M PLUS 1p</option>
-    <option value="M PLUS Rounded\\ 1c" selected>M PLUS Rounded 1c</option>
+    <option value="M PLUS Rounded\\ 1c">M PLUS Rounded 1c</option>
+    <option value="Oxanium" selected>Oxanium</option>
     <option value="Mamelon">マメロン</option>
     <option value="YasashisaB">やさしさB</option>
     <option value="HuiFont29">ふい字</option>
@@ -360,8 +362,8 @@
 
 <span data-i18n="translationLang1">翻訳言語（１）：</span>
 <select id="trans" onchange="updateOptionValues(only_url=false, transNum=1); checkTranslationModel(1, event);">
-    <option value="none" selected data-i18n="langNone">なし</option>
-    <option value="ja" data-i18n="langJapanese">日本語</option>
+    <option value="none" data-i18n="langNone">なし</option>
+    <option value="ja" selected data-i18n="langJapanese">日本語</option>
     <option value="en" data-i18n="langEnglish">英語</option>
     <option value="ko" data-i18n="langKorean">韓国語</option>
     <option value="zh-CN" data-i18n="langChinese">中国語</option>
@@ -391,6 +393,7 @@
     <option value="direct">[PC内フォント]</option>
     <option value="M PLUS\\ 1p">M PLUS 1p</option>
     <option value="M PLUS Rounded\\ 1c" selected>M PLUS Rounded 1c</option>
+    <option value="Oxanium">Oxanium</option>
     <option value="Mamelon">マメロン</option>
     <option value="YasashisaB">やさしさB</option>
     <option value="HuiFont29">ふい字</option>
@@ -416,7 +419,7 @@
     <option value="Noto Sans JP">Noto Sans JP</option>
     <option value="Sawarabi Gothic">さわらびゴシック</option>
     <option value="Nico Moji">ニコモジ</option>
-</select>　
+</select>
 <span data-i18n="pcFont">PC内フォント：</span><select id="trans_text_system_font" onchange="applySystemFont(this.value, 'trans_text'); updateOptionValues();"></select>
 <input type="text" id="trans_text_direct_font" data-i18n-placeholder="fontPlaceholder" placeholder="フォント名を入力" style="width: 200px; margin-left: 10px;" disabled oninput="applyDirectFont(this.value, 'trans_text'); updateOptionValues();"><br>
 
@@ -453,6 +456,7 @@
     <option value="direct">[PC内フォント]</option>
     <option value="M PLUS\\ 1p">M PLUS 1p</option>
     <option value="M PLUS Rounded\\ 1c" selected>M PLUS Rounded 1c</option>
+    <option value="Oxanium">Oxanium</option>
     <option value="Mamelon">マメロン</option>
     <option value="YasashisaB">やさしさB</option>
     <option value="HuiFont29">ふい字</option>
@@ -478,7 +482,7 @@
     <option value="Noto Sans JP">Noto Sans JP</option>
     <option value="Sawarabi Gothic">さわらびゴシック</option>
     <option value="Nico Moji">ニコモジ</option>
-</select>　
+</select>
 <span data-i18n="pcFont">PC内フォント：</span><select id="trans_text2_system_font" onchange="applySystemFont(this.value, 'trans_text2'); updateOptionValues();"></select>
 <input type="text" id="trans_text2_direct_font" data-i18n-placeholder="fontPlaceholder" placeholder="フォント名を入力" style="width: 200px; margin-left: 10px;" disabled oninput="applyDirectFont(this.value, 'trans_text2'); updateOptionValues();"><br>
 
@@ -515,6 +519,7 @@
     <option value="direct">[PC内フォント]</option>
     <option value="M PLUS\\ 1p">M PLUS 1p</option>
     <option value="M PLUS Rounded\\ 1c" selected>M PLUS Rounded 1c</option>
+    <option value="Oxanium">Oxanium</option>
     <option value="Mamelon">マメロン</option>
     <option value="YasashisaB">やさしさB</option>
     <option value="HuiFont29">ふい字</option>
@@ -540,7 +545,7 @@
     <option value="Noto Sans JP">Noto Sans JP</option>
     <option value="Sawarabi Gothic">さわらびゴシック</option>
     <option value="Nico Moji">ニコモジ</option>
-</select>　
+</select>
 <span data-i18n="pcFont">PC内フォント：</span><select id="trans_text3_system_font" onchange="applySystemFont(this.value, 'trans_text3'); updateOptionValues();"></select>
 <input type="text" id="trans_text3_direct_font" data-i18n-placeholder="fontPlaceholder" placeholder="フォント名を入力" style="width: 200px; margin-left: 10px;" disabled oninput="applyDirectFont(this.value, 'trans_text3'); updateOptionValues();"><br>
 
@@ -1097,13 +1102,13 @@ window.addEventListener('DOMContentLoaded', function() {
     var initial_url = base_url + "textAlign=" + (config.textAlign || "center") + "&v_align=" + (config.v_align || "bottom")
                     + "&bgcolor=" + (config.bgcolor || "#00ff00")
                     + "&size1=" + (config.size1 || "25") + "&weight1=" + (config.weight1 || "900") + "&color1=" + (config.color1 || "#ffffff")
-                    + "&st_color1=" + (config.st_color1 || "#000000") + "&st_width1=" + (config.st_width1 || "6")
+                    + "&st_color1=" + (config.st_color1 || "#000000") + "&st_width1=" + (config.st_width1 || "0")
                     + "&size2=" + (config.size2 || "25") + "&weight2=" + (config.weight2 || "900") + "&color2=" + (config.color2 || "#ffffff")
-                    + "&st_color2=" + (config.st_color2 || "#000000") + "&st_width2=" + (config.st_width2 || "6")
+                    + "&st_color2=" + (config.st_color2 || "#000000") + "&st_width2=" + (config.st_width2 || "0")
                     + "&size3=" + (config.size3 || "25") + "&weight3=" + (config.weight3 || "900") + "&color3=" + (config.color3 || "#ffffff")
-                    + "&st_color3=" + (config.st_color3 || "#000000") + "&st_width3=" + (config.st_width3 || "6")
+                    + "&st_color3=" + (config.st_color3 || "#000000") + "&st_width3=" + (config.st_width3 || "0")
                     + "&size4=" + (config.size4 || "25") + "&weight4=" + (config.weight4 || "900") + "&color4=" + (config.color4 || "#ffffff")
-                    + "&st_color4=" + (config.st_color4 || "#000000") + "&st_width4=" + (config.st_width4 || "6");
+                    + "&st_color4=" + (config.st_color4 || "#000000") + "&st_width4=" + (config.st_width4 || "0");
     
     console.log('初期読み込み URL:', initial_url);
     document.getElementById('asr_frame').src = initial_url;
@@ -2288,18 +2293,18 @@ window.addEventListener('DOMContentLoaded', function() {
                 v_align: "bottom",
                 whiteSpace: "",
                 bgcolor: "#00ff00",
-                recog: "ja",
-                size1: "25",
-                weight1: "900",
+                recog: "en-US",
+                size1: "30",
+                weight1: "600",
                 color1: "#ffffff",
                 st_color1: "#000000",
-                st_width1: "6",
-                trans: "en",
-                size2: "25",
-                weight2: "900",
+                st_width1: "0",
+                trans: "ja",
+                size2: "24",
+                weight2: "400",
                 color2: "#ffffff",
                 st_color2: "#000000",
-                st_width2: "6",
+                st_width2: "0",
                 trans2: "none",
                 size3: "25",
                 weight3: "900",
@@ -2316,8 +2321,8 @@ window.addEventListener('DOMContentLoaded', function() {
                 short_pause: "750",
                 bouyomi: false,
                 anti_sexual: false,
-                speech_text_font_selector: "M PLUS Rounded\\ 1c",
-                trans_text_font_selector: "M PLUS Rounded\\ 1c",
+                speech_text_font_selector: "Oxanium",
+                trans_text_font_selector: "Noto Sans JP",
                 trans_text2_font_selector: "M PLUS Rounded\\ 1c",
                 trans_text3_font_selector: "M PLUS Rounded\\ 1c",
                 speech_text_system_font: "",
