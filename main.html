@@ -54,8 +54,7 @@
 
         body {
             height: 100%;
-            width: 1920px;
-            min-width: 1920px;
+            width: 100%;
             margin: 0;
             overflow:hidden;
             font-family: 'M PLUS Rounded 1c', sans-serif;
@@ -1993,6 +1992,14 @@
 
     <!-- 翻訳回数管理 -->
     <div id="translationCount" style="display: none;"></div>
+
+    <script>
+    // OBS Browser Source向け: iframe外で表示時のみ固定幅を適用
+    if (window.self === window.top) {
+        document.body.style.width = '1920px';
+        document.body.style.minWidth = '1920px';
+    }
+    </script>
 
 </body>
 
